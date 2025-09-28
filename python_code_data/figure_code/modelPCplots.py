@@ -5,7 +5,6 @@ Created on Mon Oct  9 12:47:45 2023
 
 @author: Sol
 """
-
 import numpy as np
 import pickle
 import matplotlib
@@ -17,20 +16,24 @@ from matplotlib import rcParams
 from sklearn.decomposition import PCA
 from cmcrameri import cm as cmc
 from matplotlib.lines import Line2D
+from pathlib import Path
+import sys
 
-#%% load test data
+root_dir = Path(__file__).parent
+sys.path.append(str(root_dir))
 
+#%% Load test data
 model_name = 'DLPFCcombined_m4'
-folder = f'{model_name}/testdata' # edit to your path
+folder = f'figure_code/testdata' # edit to your path
 test_name = f'{model_name}_allCondsNoNoise_coh0.6'
 
-weights_DLPFC = dict(np.load(f'./saved_weights/{model_name}.npz', allow_pickle=True))
+weights_DLPFC = dict(np.load(f'{root_dir}/model_weights/{model_name}.npz', allow_pickle=True))
 N_dirOuts = weights_DLPFC['W_out'].shape[0]
 
-state_var_DLPFC = pickle.load(open(f'./{folder}/' + test_name + '_DLPFCstatevar.pickle', 'rb'))
-trial_params = pickle.load(open(f'./{folder}/' + test_name + '_trialparams.pickle', 'rb'))
-output_DLPFC = pickle.load(open(f'./{folder}/' + test_name + '_DLPFCoutput.pickle', 'rb'))
-state_var_MT= pickle.load(open(f'./{folder}/' + test_name + '_MTstatevar.pickle', 'rb'))
+state_var_DLPFC = pickle.load(open(f'{root_dir}/{folder}/' + test_name + '_DLPFCstatevar.pickle', 'rb'))
+trial_params = pickle.load(open(f'{root_dir}/{folder}/' + test_name + '_trialparams.pickle', 'rb'))
+output_DLPFC = pickle.load(open(f'{root_dir}/{folder}/' + test_name + '_DLPFCoutput.pickle', 'rb'))
+state_var_MT= pickle.load(open(f'{root_dir}/{folder}/' + test_name + '_MTstatevar.pickle', 'rb'))
 
 choice_degs = np.argmax(output_DLPFC[:, -1, -N_dirOuts:], axis=1) * 360/N_dirOuts
 
@@ -44,7 +47,6 @@ unique_shown = np.unique(shown_degs)
 unique_bias = np.unique(good_degs)
 
 #%% averaging over motion/reward conditions
-
 dale = 0.8
 N_rec_MT = state_var_MT.shape[2]
 N_rec_DLPFC = state_var_DLPFC.shape[2]
@@ -64,7 +66,6 @@ for i in range(unique_bias.shape[0]):
     fr_DLPFC_rewardavg[i] = np.mean(fr_DLPFC[inds,:,:], axis=0)
 
 #%% PCA motion and reward dimensions
-
 t_pca = fr_MT.shape[1] - 1 # timepoint for PCA (last timepoint)
 
 pca_MT_shownavg = PCA(n_components=0.9)
@@ -88,7 +89,6 @@ print(pca_DLPFC_rewardavg.explained_variance_ratio_)
 DLPFC_MRdims = np.concatenate((pca_DLPFC_shownavg.components_[:2,:], pca_DLPFC_rewardavg.components_[:1,:]), axis=0) # 2 motion dimensions, 1 reward dimension
 
 #%% motion and reward dimensions plot, 2 reward conditions: MT
-
 dim = 3 # 2D or 3D
 rew_conds = [60, 240]
 trials = np.stack((np.where(good_degs==rew_conds[0])[0], np.where(good_degs==rew_conds[1])[0]))
@@ -292,4 +292,3 @@ plt.tick_params(labelsize=10)
 plt.tight_layout()
 
 #plt.savefig(f'./{model_name}/eps_figs/DLPFC_{dim}d_allconditions.eps', format='eps')
-

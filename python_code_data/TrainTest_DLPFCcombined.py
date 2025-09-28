@@ -5,16 +5,15 @@ Created on Thu Jun 29 14:01:08 2023
 
 @author: Sol
 """
-
+from pathlib import Path
 import os
-os.chdir('/Users/Sol/Desktop/CohenLab/DotsBehavior')
+root_dir = Path(__file__).parent
+os.chdir(str(root_dir))
+
 from DotsTasks import MT_broadInSharpOut_withR, DLPFC_combined
-import sys
-sys.path.insert(0, '/Users/Sol/PsychRNN/psychrnn/backend/models')
-from basic import Basic
-sys.path.insert(0, '/Users/Sol/PsychRNN/psychrnn/backend')
-from simulation import BasicSimulator_linOut
-from simulation import BasicSimulator
+from psychrnn.backend.models.basic import Basic
+from psychrnn.backend.simulation import BasicSimulator_linOut
+from psychrnn.backend.simulation import BasicSimulator
 import matplotlib
 from matplotlib import rcParams
 import matplotlib.pyplot as plt
@@ -23,6 +22,7 @@ import tensorflow as tf
 import pickle
 from cmcrameri import cm as cmc
 import pandas as pd
+
 #%% TRAIN
 customLoss = True
 model_name = 'DLPFCcombined_m4'
@@ -30,24 +30,26 @@ N_trainbatch = 500
 
 # MT params
 MTmodel_name = 'MTbroadsharp_m10'
-MT_weights = dict(np.load(f'./saved_weights/{MTmodel_name}.npz', allow_pickle=True))
+MT_weights = dict(np.load(f'./model_weights/{MTmodel_name}.npz', allow_pickle=True))
+N_rec_MT = MT_weights['W_rec'].shape[0]
 MT_NdirOuts = 72
 in_noise_MT = 0.4
 rec_noise_MT = 0.2
 coh = [0.6]
 
 # define MT simulator
-MT_task = MT_broadInSharpOut_withR(N_batch=N_trainbatch, N_rec=MT_weights['W_rec'].shape[0], in_noise=in_noise_MT, coh=coh, catchP=0)
+MT_task = MT_broadInSharpOut_withR(N_batch=N_trainbatch, N_rec=N_rec_MT, 
+                                   in_noise=in_noise_MT, coh=coh, catchP=0)
 MT_network_params = MT_task.get_task_params()
 MT_network_params['name'] = MTmodel_name
-MT_network_params['N_rec'] = MT_weights['W_rec'].shape[0]
+MT_network_params['N_rec'] = N_rec_MT
 MT_network_params['rec_noise'] = rec_noise_MT
 MT_simulator = BasicSimulator_linOut(weights=MT_weights, params=MT_network_params)
 
 # DLPFC params:
 in_noise_DLPFC = 0.2
 rec_noise_DLPFC = 0.2
-initial_weights = None #dict(np.load('./saved_weights/DLPFCvonmisesin_m7.npz', allow_pickle=True))
+initial_weights = None
 N_rec_DLPFC = 150 if initial_weights is None else initial_weights['W_rec'].shape[0]
 dale = 0.8 if initial_weights is None else float(initial_weights['dale_ratio'])
 

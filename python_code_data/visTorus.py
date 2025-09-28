@@ -5,7 +5,6 @@ Created on Tue Jul 18 12:39:17 2023
 
 @author: Sol
 """
-
 import numpy as np
 import pickle
 import matplotlib
@@ -18,19 +17,23 @@ from matplotlib import cm
 from matplotlib.colors import Normalize
 from sklearn.decomposition import PCA
 from cmcrameri import cm as cmc
-import circledots_fxns as cf
 from matplotlib.lines import Line2D
+from pathlib import Path
+import sys
+
+root_dir = Path(__file__).parent
+sys.path.append(str(root_dir))
+import circledots_fxns as cf
     
 #%% load testdata all conditions
-
 N_dirOuts = 72
 model_name = 'DLPFCcombined_m4'
-folder = model_name
+folder = 'figure_code/testdata'
 
 test_name = f'{model_name}_allCondsNoNoise_coh0.6'
-state_var_ac = pickle.load(open(f'./{folder}/' + test_name + '_DLPFCstatevar.pickle', 'rb'))
-trial_params_ac = pickle.load(open(f'./{folder}/' + test_name + '_trialparams.pickle', 'rb'))
-output_ac = pickle.load(open(f'./{folder}/' + test_name + '_DLPFCoutput.pickle', 'rb'))
+state_var_ac = pickle.load(open(f'{root_dir}/{folder}/' + test_name + '_DLPFCstatevar.pickle', 'rb'))
+trial_params_ac = pickle.load(open(f'{root_dir}/{folder}/' + test_name + '_trialparams.pickle', 'rb'))
+output_ac = pickle.load(open(f'{root_dir}/{folder}/' + test_name + '_DLPFCoutput.pickle', 'rb'))
 
 choice_ac = np.argmax(output_ac[:, -1, -N_dirOuts:], axis=1)
 choice_deg_ac = choice_ac * 360/N_dirOuts
@@ -38,7 +41,7 @@ choice_deg_ac = choice_ac * 360/N_dirOuts
 shown_degs_ac = np.array([trial_params_ac[i]['shown_deg'] for i in range(trial_params_ac.shape[0])])
 good_degs_ac = np.array([trial_params_ac[i]['good_deg'] for i in range(trial_params_ac.shape[0])])
         
-weights = dict(np.load(f'./saved_weights/{model_name}.npz', allow_pickle=True))
+weights = dict(np.load(f'{root_dir}/model_weights/{model_name}.npz', allow_pickle=True))
 
 savename = f'{model_name}_DLPFClayer_allCondsNoNoise_coh0.6'
 
@@ -55,7 +58,6 @@ print(pca_ac.explained_variance_ratio_)
 print(pca_ac.explained_variance_ratio_.shape)
 
 #%% animation 3D, plot several reward conditions, last timepoint
-
 rewConds = np.arange(0, 360, 20)
 pca_components = pca_ac.components_[:3]
 
@@ -72,17 +74,7 @@ for r in range(rewConds.shape[0]):
     ax.legend(handles=ring)
     plt.pause(0.5)
     ax.get_legend().remove()
-#%% matlab is better for 3D
 
-from scipy.io import savemat
-
-savemat(f'./matlab_code_data/{test_name}.mat', {'DLPFCstatevar':state_var_ac, 'trialparams':trial_params_ac, 'DLPFCoutput':output_ac})
-
-
-
-
-
-
-
-
-
+#%% Save mat file for plotting in 3D
+#from scipy.io import savemat
+#savemat(f'{parent_dir}/matlab_code_data/{test_name}.mat', {'DLPFCstatevar':state_var_ac, 'trialparams':trial_params_ac, 'DLPFCoutput':output_ac})

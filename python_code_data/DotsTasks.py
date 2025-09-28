@@ -13,7 +13,9 @@ import circledots_fxns as cf
 rng = np.random.default_rng()
 
 class DLPFC_combined(Task):
-    def __init__(self, dt=10, tau=100, T=1200, N_batch=100, N_rec=100, in_noise=0.4, D_mstim_strength=0, MT_task=None, MT_simulator=None, MT_NdirOuts=72, saveMTactivity=False):
+    def __init__(self, dt=10, tau=100, T=1200, N_batch=100, N_rec=100, in_noise=0.4, 
+                 D_mstim_strength=0, MT_task=None, MT_simulator=None, MT_NdirOuts=72, 
+                 saveMTactivity=False):
         N_in = 3 + MT_NdirOuts
         N_out = 72
         super().__init__(N_in, N_out, dt, tau, T, N_batch)
@@ -138,7 +140,9 @@ class DLPFC_combined(Task):
     
 class MT_broadInSharpOut_withR(Task):
 
-    def __init__(self, dt=10, tau=100, T=1200, N_batch=100, N_rec=100, in_noise=0.2, coh=[0.6], k_in=0.3, k_out=0.8, M_mstim_strength=0, fix_shown=None, fix_reward=None, catchP=0.0, fix_onset=None, test1ofEach=False):
+    def __init__(self, dt=10, tau=100, T=1200, N_batch=100, N_rec=100, 
+                 in_noise=0.2, coh=[0.6], k_in=0.3, k_out=0.8, M_mstim_strength=0, 
+                 fix_shown=None, fix_reward=None, catchP=0.0, fix_onset=None, test1ofEach=False):
         N_in = 72 + 3
         N_out = 72 + 2
         if test1ofEach:
@@ -204,8 +208,8 @@ class MT_broadInSharpOut_withR(Task):
             params['t_ring'] = self.fix_onset[0]
             params['t_dots'] = self.fix_onset[1]
         else:
-            params['t_ring'] = 10*rng.integers(5,15)
-            params['t_dots'] = 10*rng.integers(45,55)
+            params['t_ring'] = 10 * rng.integers(5, 15)
+            params['t_dots'] = 10 * rng.integers(45, 55)
             
         if shown_deg is not None:
             params['coherence'] = rng.choice(self.coh)
@@ -281,9 +285,11 @@ class MT_broadInSharpOut_withR(Task):
                 A = 2.0
                 assert A >= 1.0
                 
-                x_t[2:-1] += -0.3 + np.exp(coh * k_in * np.cos(np.radians(unit_dirs_in - shown_deg)))
+                x_t[2:-1] += -0.3 + np.exp(
+                    coh * k_in * np.cos(np.radians(unit_dirs_in - shown_deg)))
                 
-                y_t[2:] += A * ( -0.3 + np.exp(coh * k_out * np.cos(np.radians(unit_dirs_out - shown_deg))) )
+                y_t[2:] += A * (-0.3 + np.exp(
+                    coh * k_out * np.cos(np.radians(unit_dirs_out - shown_deg))))
                 
                 if time >= t_dots + 100:
                     mask_t[2:] += 0.8 * (time - t_dots)/(self.T - t_dots)
