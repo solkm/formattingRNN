@@ -5,6 +5,7 @@ Created on Mon Oct  9 12:47:45 2023
 
 @author: Sol
 """
+#%% Imports
 import numpy as np
 import pickle
 import matplotlib
@@ -35,22 +36,19 @@ trial_params = pickle.load(open(f'{root_dir}/{folder}/' + test_name + '_trialpar
 output_DLPFC = pickle.load(open(f'{root_dir}/{folder}/' + test_name + '_DLPFCoutput.pickle', 'rb'))
 state_var_MT= pickle.load(open(f'{root_dir}/{folder}/' + test_name + '_MTstatevar.pickle', 'rb'))
 
-choice_degs = np.argmax(output_DLPFC[:, -1, -N_dirOuts:], axis=1) * 360/N_dirOuts
-
+choice_degs = np.argmax(output_DLPFC[:, -1, :], axis=1) * 360 / N_dirOuts
 shown_degs = np.array([trial_params[i]['shown_deg'] for i in range(trial_params.shape[0])])
 good_degs = np.array([trial_params[i]['good_deg'] for i in range(trial_params.shape[0])])
 
-fr_MT = np.maximum(state_var_MT[:,:,:],0) # apply ReLu
-fr_DLPFC = np.maximum(state_var_DLPFC[:,:,:],0) # apply ReLu
+fr_MT = np.maximum(state_var_MT[:, :, :],0) # apply ReLu
+fr_DLPFC = np.maximum(state_var_DLPFC[:, :, :],0) # apply ReLu
 
 unique_shown = np.unique(shown_degs)
 unique_bias = np.unique(good_degs)
 
-#%% averaging over motion/reward conditions
-dale = 0.8
-N_rec_MT = state_var_MT.shape[2]
-N_rec_DLPFC = state_var_DLPFC.shape[2]
+#%% Averaging over motion/reward conditions
 
+# Average firing rates over trials with same shown direction (marginalizing over reward bias)
 fr_MT_shownavg = np.zeros((unique_shown.shape[0], fr_MT.shape[1], fr_MT.shape[2]))
 fr_DLPFC_shownavg = np.zeros((unique_shown.shape[0], fr_DLPFC.shape[1], fr_DLPFC.shape[2]))
 for i in range(unique_shown.shape[0]):
@@ -58,6 +56,7 @@ for i in range(unique_shown.shape[0]):
     fr_MT_shownavg[i,:,:] = np.mean(fr_MT[inds,:,:], axis=0)
     fr_DLPFC_shownavg[i, :, :] = np.mean(fr_DLPFC[inds,:,:], axis=0)
 
+# Average firing rates over trials with same reward bias (marginalizing over shown motion direction)
 fr_MT_rewardavg = np.zeros((unique_bias.shape[0], fr_MT.shape[1], fr_MT.shape[2]))
 fr_DLPFC_rewardavg = np.zeros((unique_bias.shape[0], fr_DLPFC.shape[1], fr_DLPFC.shape[2]))
 for i in range(unique_bias.shape[0]):
@@ -65,30 +64,53 @@ for i in range(unique_bias.shape[0]):
     fr_MT_rewardavg[i] = np.mean(fr_MT[inds,:,:], axis=0)
     fr_DLPFC_rewardavg[i] = np.mean(fr_DLPFC[inds,:,:], axis=0)
 
-#%% PCA motion and reward dimensions
+#%% PCA on averaged activity to get motion and reward dimensions
 t_pca = fr_MT.shape[1] - 1 # timepoint for PCA (last timepoint)
+n_m_dims = 2 # number of motion dimensions
+n_r_dims = 1 # number of reward dimensions
 
+# MT-like module
 pca_MT_shownavg = PCA(n_components=0.9)
 pca_MT_shownavg.fit_transform(fr_MT_shownavg[:, t_pca, :])
-print(pca_MT_shownavg.explained_variance_ratio_)
+MT_shownavg_var_exp = pca_MT_shownavg.explained_variance_ratio_
+print(MT_shownavg_var_exp)
 
 pca_MT_rewardavg = PCA(n_components=0.9)
 pca_MT_rewardavg.fit_transform(fr_MT_rewardavg[:, t_pca, :])
-print(pca_MT_rewardavg.explained_variance_ratio_)
+MT_rewardavg_var_exp = pca_MT_rewardavg.explained_variance_ratio_
+print(MT_rewardavg_var_exp)
 
-MT_MRdims = np.concatenate((pca_MT_shownavg.components_[:2,:], pca_MT_rewardavg.components_[:1,:]), axis=0) # 2 motion dimensions, 1 reward dimension
+MT_MRdims = np.concatenate((pca_MT_shownavg.components_[:n_m_dims, :], # motion dimensions
+                            pca_MT_rewardavg.components_[:n_r_dims, :]), axis=0) # reward dimensions
 
+# DLPFC-like module
 pca_DLPFC_shownavg = PCA(n_components=0.9)
 pca_DLPFC_shownavg.fit_transform(fr_DLPFC_shownavg[:, t_pca, :])
-print(pca_DLPFC_shownavg.explained_variance_ratio_)
+DLPFC_shownavg_var_exp = pca_DLPFC_shownavg.explained_variance_ratio_
+print(DLPFC_shownavg_var_exp)
 
 pca_DLPFC_rewardavg = PCA(n_components=0.9)
 pca_DLPFC_rewardavg.fit_transform(fr_DLPFC_rewardavg[:, t_pca, :])
-print(pca_DLPFC_rewardavg.explained_variance_ratio_)
+DLPFC_rewardavg_var_exp = pca_DLPFC_rewardavg.explained_variance_ratio_
+print(DLPFC_rewardavg_var_exp)
 
-DLPFC_MRdims = np.concatenate((pca_DLPFC_shownavg.components_[:2,:], pca_DLPFC_rewardavg.components_[:1,:]), axis=0) # 2 motion dimensions, 1 reward dimension
+DLPFC_MRdims = np.concatenate((pca_DLPFC_shownavg.components_[:n_m_dims, :], # motion dimensions
+                               pca_DLPFC_rewardavg.components_[:n_r_dims, :]), axis=0) # reward dimensions
 
-#%% motion and reward dimensions plot, 2 reward conditions: MT
+#%% Save activity in M & R dims to mat file
+# import scipy.io as sio
+# save_folder = './matlab_code_data/modeltestdata'
+# sio.savemat(f'{save_folder}/{test_name}_MRdims.mat', 
+#             {'MT_fr_MRdims': fr_MT[:, -1, :] @ MT_MRdims.T,
+#              'DLPFC_fr_MRdims': fr_DLPFC[:, -1, :] @ DLPFC_MRdims.T,
+#              'shown_degs': shown_degs,
+#              'good_degs': good_degs,
+#              'choice_degs': choice_degs,
+#              'MT_MRdims': MT_MRdims,
+#              'DLPFC_MRdims': DLPFC_MRdims,
+#             })
+
+#%% Motion and reward dimensions plot, 2 reward conditions: MT
 dim = 3 # 2D or 3D
 rew_conds = [60, 240]
 trials = np.stack((np.where(good_degs==rew_conds[0])[0], np.where(good_degs==rew_conds[1])[0]))
@@ -99,7 +121,7 @@ size = 20
 alpha = 1
 t = t_pca
 
-# plot condition 1
+# Plot condition 1
 fig = plt.figure(figsize=(4,4))
 edgecolors1 = None
 colors1 = cmc.romaO(shown_degs[trials[0]]/360) if color_shown==True else cmc.romaO(choice_degs[trials[0]]/360)
@@ -113,7 +135,7 @@ elif dim==2:
     ax = fig.gca()
     ax.scatter(traj1[:, 0], traj1[:, 1], marker=marker, color=colors1, s=size, edgecolor=edgecolors1, alpha=alpha)
 
-# plot condition 2
+# Plot condition 2
 edgecolors2 = cmc.romaO(shown_degs[trials[1]]/360) if color_shown==True else cmc.romaO(choice_degs[trials[1]]/360)
 colors2 = 'none'
 lw = 1.2
@@ -126,7 +148,7 @@ elif dim==2:
     ax = fig.gca()
     ax.scatter(traj2[:, 0], traj2[:, 1], marker=marker, color=colors2, s=size, edgecolor=edgecolors2, linewidths=lw, alpha=alpha)
 
-# labels and legend
+# Labels and legend
 rcParams['font.size']=12
 plt.title('MT')
 plt.xlabel('motion dim 1')
@@ -145,9 +167,9 @@ legend_elements = [Line2D([0], [0], marker='o', color='w', label=label1, markerf
                    Line2D([0], [0], marker='o', color='w', label=label2, markerfacecolor='none', markeredgecolor=[0.2,0.2,0.2], markeredgewidth=2, markersize=8)]
 plt.legend(handles=legend_elements, loc='best')
 
-#plt.savefig(f'./{model_name}/eps_figs/MT_MRdims_{dim}d_bias{rew_conds[0]}and{rew_conds[1]}.eps', format='eps')
+# plt.savefig(f'./{model_name}/eps_figs/MT_MRdims_{dim}d_bias{rew_conds[0]}and{rew_conds[1]}.eps', format='eps')
 
-#%% motion and reward dimensions plot, 2 reward conditions: DLPFC
+#%% Motion and reward dimensions plot, 2 reward conditions: DLPFC
 
 dim = 3 # 2D or 3D
 rew_conds = [60, 240]
@@ -207,7 +229,7 @@ plt.legend(handles=legend_elements, loc='best')
 
 #plt.savefig(f'./{model_name}/eps_figs/DLPFC_MRdims_{dim}d_bias{rew_conds[0]}and{rew_conds[1]}.eps', format='eps')
 
-#%% normal PCA, no averaging
+#%% Normal PCA, no averaging
 
 t_pca = fr_MT.shape[1] - 1 # timepoint for PCA (last timepoint)
 
@@ -288,7 +310,6 @@ if dim==3:
     ax.set_zlabel('PC3')
 ax.set_aspect('equal')
 plt.tick_params(labelsize=10)
-
 plt.tight_layout()
 
-#plt.savefig(f'./{model_name}/eps_figs/DLPFC_{dim}d_allconditions.eps', format='eps')
+# plt.savefig(f'./{model_name}/eps_figs/DLPFC_{dim}d_allconditions.eps', format='eps')
