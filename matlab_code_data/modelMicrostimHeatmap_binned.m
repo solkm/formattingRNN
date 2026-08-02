@@ -3,11 +3,7 @@
 layer = 'DLPFC'; % 'MT' or 'DLPFC'
 bias = 0; % 180 or 0, reward bias relative to microstimulated site
 
-if bias==180
-    bias_str = 'bias180';
-elseif bias==0
-    bias_str = '';
-end
+bias_str = sprintf('bias%d', bias);
 
 if strcmp(layer, 'MT')
     filepath = append('./modeltestdata/DLPFCcombined_m4_stimMTu[37, 4, 42, 25, 34]', ...

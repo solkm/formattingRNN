@@ -3,8 +3,8 @@ addpath('CircStat2012a')
 addpath('modeltestdata')
 
 %% Load data
-load("DLPFCcombined_m4_stimDLPFCu[53, 25, 54, 8, 9]_paramsChoicesOutputs.mat")
-load("DLPFCcombined_m4_stimMTu[37, 4, 42, 25, 34]_paramsChoicesOutputs.mat")
+load("DLPFCcombined_m4_stimDLPFCu[53, 25, 54, 8, 9]bias0_paramsChoicesOutputs.mat")
+load("DLPFCcombined_m4_stimMTu[37, 4, 42, 25, 34]bias0_paramsChoicesOutputs.mat")
 
 %% Pick an example unit and motion direction
 

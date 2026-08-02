@@ -13,6 +13,18 @@ Published in final form as:
 
 The model is a two-module RNN: an MT-like module trained to output a sharpened motion-direction estimate and the reward-center location from noisy motion and reward-condition inputs, and a dlPFC-like module, driven by the (frozen) MT-like module's output, trained to output the expected reward associated with each possible choice. See Supplementary Methods section 6 ("Recurrent neural network model") for the full mathematical description.
 
+# Data
+
+Simulated model test data (used by the figure-generating scripts below) is too large for this repository and is hosted separately on Zenodo:
+
+> https://doi.org/10.5281/zenodo.21764173
+
+Download and unzip the two files there into the following locations (relative to the repo root):
+- `python_model_data.zip` → unzip into `python_code_data/figure_code/testdata/`
+- `matlab_model_data.zip` → unzip into `matlab_code_data/modeltestdata/`
+
+Trained model weights (`model_weights/*.npz`) are small enough to be included directly in this repo.
+
 # Resources
 
 This project was developed using the PsychRNN package:
@@ -52,7 +64,7 @@ Trained weights are saved to `model_weights/` (as `DLPFCcombined_m4.npz` for the
 Converts a single `simulate_combined_model.py` test run's pickled output (trial parameters, MT/dlPFC recurrent activity, dlPFC input/output) into a single `.mat` file for use in MATLAB.
 
 ### `generate_microstim_testdata.py`
-Generates microstimulation test data for multiple units/conditions in one run (looping over a set of stimulated units, each with and without stimulation), then aggregates the results into the `mstimMT`/`mstimDLPFC` `.mat` struct format consumed by the MATLAB microstimulation plotting scripts (e.g. `modelMicrostimHeatmap_binned.m`, `polarPlotsUstimChoiceSummary_model.m`). The reward bias relative to each stimulated unit's preferred direction (aligned vs. opposite) is set by `reward_rel`, reflected in the output filename (`bias180` = opposite; no suffix = aligned) — matching **Figure 4B** (aligned) vs. **4C** (opposite).
+Generates microstimulation test data for multiple units/conditions in one run (looping over a set of stimulated units, each with and without stimulation), then aggregates the results into the `mstimMT`/`mstimDLPFC` `.mat` struct format consumed by the MATLAB microstimulation plotting scripts (e.g. `modelMicrostimHeatmap_binned.m`, `polarPlotsUstimChoiceSummary_model.m`). The reward bias relative to each stimulated unit's preferred direction (aligned vs. opposite) is set by `reward_rel`, reflected in the output filename (`bias180` = opposite; `bias0` = aligned) — matching **Figure 4B** (aligned) vs. **4C** (opposite).
 
 ### `find_unit_pref_dirs.py`
 Finds each recurrent unit's preferred direction in both modules, relevant for determining the preferred directions of the units used in `generate_microstim_testdata.py`: output-weight tuning (`weight_pref`, both modules) and response tuning to the shown motion direction (`shown_pref`, both modules) and to the model's own choice (`choice_pref`, dlPFC only), computed from the existing all-conditions, zero-noise test data in `figure_code/testdata`. Saves `MT_tuning_df.csv`/`DLPFC_tuning_df.csv` and plots a sorted tuning matrix for each metric.
@@ -77,5 +89,5 @@ Located in `matlab_code_data`.
 - `modelMicrostimHeatmap.m` / `modelMicrostimHeatmap_binned.m` — choice-frequency difference heatmaps (chosen vs motion direction, relative to stimulated unit's preference), averaged across the 5 stimulated units per module. The `_binned` version bins into 20°-wide bins; the other computes exact per-degree frequencies. Both take a `layer` (`'MT'`/`'DLPFC'`) and `bias` (`0`/`180`) switch to pick which module/relative reward bias condition to load. The binned version maps onto **Figure 4B and C**, model columns.
 - `polarPlotsUstimChoiceEx_model.m` — polar histogram of an example unit's choice distribution with microstimulation, for one module.
 - `polarPlotsUstimChoiceSummary_model.m` — polar histogram pooling choices across all 5 stimulated units per module (aligned to each unit's own preferred direction). Maps onto **Figure 4A**.
-- `polarPlotsUstimChoiceEx_expdata.m` / `polarPlotsUstimChoiceSummary_expdata.m` — the same two analyses, using real monkey microstimulation session data (`experimentdata/mtUstimBehaviorSummary.mat`/`dlpfcUstimBehaviorSummary.mat`). The summary maps onto **Figure 4A**, monkey columns.
+- `polarPlotsUstimChoiceEx_expdata.m` / `polarPlotsUstimChoiceSummary_expdata.m` — the same two analyses, using real monkey microstimulation session data (`experimentdata/mtUstimBehaviorSummary.mat`/`dlpfcUstimBehaviorSummary.mat`). The summary maps onto **Figure 4A**, monkey columns. *Note: `experimentdata/mtUstimBehaviorSummary.mat` and `dlpfcUstimBehaviorSummary.mat` are not included in this repository; per the manuscript's Data Availability statement, this data is available from the corresponding author upon reasonable request.*
 - `rewardFunctionPolarPlot.m` — polar plots of the reward function and the MT-like module's target output.
