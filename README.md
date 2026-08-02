@@ -19,9 +19,9 @@ Simulated model test data (used by the figure-generating scripts below) is too l
 
 > https://doi.org/10.5281/zenodo.21764173
 
-Download and unzip the two files there into the following locations (relative to the repo root):
-- `python_model_data.zip` → unzip into `python_code_data/figure_code/testdata/`
-- `matlab_model_data.zip` → unzip into `matlab_code_data/modeltestdata/`
+Download the two files there, unzip and add their contents into the following folders in the repo:
+- `python_model_data.zip` → `python_code_data/figure_code/testdata/`
+- `matlab_model_data.zip` → `matlab_code_data/modeltestdata/`
 
 Trained model weights (`model_weights/*.npz`) are small enough to be included directly in this repo.
 
