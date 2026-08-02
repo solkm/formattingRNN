@@ -1,0 +1,320 @@
+ 1
+ 2                            Supplementary Materials for
+ 3
+ 4                        Linking neuronal population formatting to function
+ 5
+ 6                  Douglas A. Ruff, Sol K. Markman, Jason Z. Kim, Marlene R. Cohen
+ 7
+ 8                            Corresponding author: daruff@uchicago.edu
+ 9
+10
+11   The PDF file includes:
+12
+13         Materials and Methods
+14         References
+15
+16
+17
+18
+19
+20   Methods Contents
+21
+22   1. Population formatting simulation
+23   2. Subjects
+24   3. Behavioral task
+25            3.1 Procedures
+26            3.2 Task and training
+27   4. Electrophysiology experiments
+28            4.1 Procedures
+29            4.2 Recording locations
+30            4.3 Electrical microstimulation
+31            4.4 Quantifying the effect of microstimulation
+32   5. Analysis of electrophysiological data
+33            5.1 Data inclusion criteria
+34            5.2 Mixed selectivity analysis
+35            5.3 Dimensionality reduction and angle calculations
+36            5.4 Regression, residual and decoding analysis
+37   6. Recurrent neural network model
+38            6.1 Training and architecture
+39            6.2 Model unit perturbation
+40
+41
+42
+43
+44
+45
+46   1. Population formatting simulation
+47   We conducted a simple simulation to demonstrate that it is possible for populations of neurons with
+48   identical visual tuning functions and reward modulation to format information in different ways. We
+49   simulated two populations of neurons, each of which consisted of units with the same motion direction
+50   tuning functions, which were Von Mises functions with uniformly distributed preferred directions
+51   (preferred directions varied in steps of 10).
+52
+53   We simulated modulation by reward expectation in ways consistent with the small, heterogeneous,
+54   multiplicative gain changes observed in neuronal responses in tasks that vary reward expectation and
+55   feature attention (1, 2). We drew gains for each neuron from a uniform distribution between 1 and 1.2 and
+56   used these as a multiplier to the response of each neuron. Inspired by single neuron studies, we scaled this
+57   multiplier by the difference between the preferred direction of the neuron and the center of the high
+58   reward region. Depending on the extent to which these random gains happened to coordinate across the
+59   population, we could choose random draws such that the population formatted motion and reward
+60   information differently (Figure 1A-G).
+61
+62   2. Subjects
+63   We trained two adult male rhesus monkeys, S and O (8 and 10 kg, respectively) to perform a continuous
+64   motion estimation task with variable reward expectation. Before training, both monkeys were prepared
+65   surgically with a custom titanium head holding device. To enable electrophysiological recordings, two
+66   recording cylinders (Crist instruments Co., Inc., Hagerstown, MD) were placed over 1) the principal
+67   sulcus and 2) visual cortex to provide access to dlPFC and MT, respectively. All surgical and behavioral
+68   procedures conformed to the guidelines established by the National Institutes of Health and were
+69   approved by the Institutional Animal Care and Use Committees of the University of Pittsburgh and
+70   Carnegie Mellon.
+71
+72   3. Behavioral task
+73
+74   3.1. Procedures
+75   During training and recording sessions, the monkeys sat in a primate chair that provided head restraint.
+76   Visual stimuli were presented at a 120Hz refresh rate on a high-quality LCD monitor (VPixx
+77   Technologies Inc., QC Canada) placed 57cm from the monkey’s eyes. Eye movements were monitored
+78   using an infrared optical eye tracker (Eyelink 1000, SR Research, ON, Canada). Behavioral control and
+79   stimulus presentation were managed by computers using a Unix based operating system (running
+80   MATLAB, The MathWorks, Inc., Natick, MA, and PsychToolbox (3, 4)).
+81
+82   3.2. Task and training
+83
+84   A trial began when the monkey fixated a central spot on a black background (inside an invisible 1
+85   diameter window). Then a circular target ring was displayed and remained visible for the remainder of the
+86   trial. The target ring was uniform gray except for two segments 180 apart that were colored either pink
+87   or purple to signify increased or decreased reward scaling (see below and in Supplementary Figure 1).
+88   After a 200-400 ms delay, a dynamic random dot kinematogram was displayed in a stationary circular
+89   aperture inside the target ring. These motion stimuli were identical to those described in (5) and were
+90   presented at a single motion strength (coherence), typically between 40 and 50%, for most experiments
+91   (exceptions are described in Supplementary Figures 10 and 11). During multi-coherence experiments,
+92   trials using two motion coherences were randomly interleaved (low coherence: 15% - 20%; high
+93   coherence: 35% - 50%) and during the experiments described in Supplementary Figure 9 where there was
+94   no reward scaling on the target ring, data from only low coherence trials (15% - 20%) are shown.
+95
+ 96   Monkeys were trained to make a saccadic eye movement to a location on the target ring to signify their
+ 97   choice. The monkeys could initiate the eye movement between 150 and 1500 ms after visual stimulus
+ 98   onset. The reward was based on the accuracy of the motion estimate, scaled by the amount indicated by
+ 99   the location of the pink- and purple- colored portions of the target ring. Which color signified the
+100   increased or decreased reward center switched in blocks with randomized, unsignaled changes throughout
+101   the experiment (typically 2-8 changes per session; Supplementary Figure 1).
+102
+103   During training, the monkeys first learned to perform the motion continuous estimation task before the
+104   reward scaling was introduced. The monkeys learned to saccade to a location on the target ring that
+105   matched the direction of motion of the visual stimulus, not where the vector of motion of the stimulus
+106   would cross the target ring. This design ensured that the monkeys’ judgements would not be biased by the
+107   exact location of either the visual motion stimulus or the target ring, both of which could vary based on
+108   the receptive field locations of the recorded neurons.
+109
+110
+111   4. Electrophysiology experiments
+112
+113   4.1. Procedures
+114
+115   Neurophysiological recordings were performed using 24 or 32 channel linear probes (V- and S- probes;
+116   Plexon Inc, Dallas, TX) positioned using grids (Crist Instruments Company Inc., Hagerstown, MD) and
+117   advanced using a hydraulic microdrive (Kopf instruments, Tujunga, CA). Spiking activity, local field
+118   potentials, eye position, and task events were recorded at 30,000 samples/second (using Trellis software
+119   and Ripple recording hardware; Ripple, Salt Lake City, UT). All data were analyzed using custom scripts
+120   (MATLAB; The MathWorks, Inc., Natick, MA).
+121
+122   4.2. Recording locations
+123
+124   Recordings in MT were made via a chamber positioned over visual cortex aimed anteriorly toward the
+125   middle temporal lobe. This posterior approach provided access to groups of MT units with similar spatial
+126   receptive fields but different direction tuning preferences across the contacts of a multi-channel probe (6,
+127   7). MT units were identified based on stereotactic coordinates, gray-white matter transitions, and
+128   functional properties. In most experiments, we aimed for MT units with receptive fields that were less
+129   than 12 degrees eccentric so we could place the motion stimulus within their receptive fields without
+130   overlapping the target ring. When we electrically stimulated MT neurons whose receptive fields
+131   overlapped the target ring (Supplementary Figure 12), we used neurons with more eccentric receptive
+132   fields. During all recordings, we advanced the probe until we could stably record from as many visually
+133   responsive and direction-tuned units as possible. We measured spatial receptive field and direction tuning
+134   to verify electrode positioning, guide motion stimulus positioning, and, when relevant, identify the tuning
+135   preferences of sites recorded on the contacts we used for electrical stimulation.
+136
+137   Recordings in dlPFC were made via a chamber positioned over frontal cortex, anterior to the arcuate
+138   sulcus and spanning both sides of the principal sulcus (determined by stereotactic location and visual
+139   inspection during surgery). We recorded units along the banks and gyri of the principal sulcus. We used
+140   recording locations in which we observed spatial selectivity during any period of a delayed saccade task,
+141   and we stopped advancing the probe when we could stably record from as many selective units as
+142   possible. We typically recorded from units with response fields at similar eccentricities, whose locations
+143   sometimes progressed counter-clockwise as penetration depth increased. We preferred units whose
+144   response fields were more than 10 degrees eccentric so we could position a portion of the target ring
+145   within them and avoid overlap with the visual motion stimulus. We placed one colored portion of the ring
+146   at a location that was well covered by the response fields of the recorded units, and the other colored
+147   region was placed 180 away.
+148
+149   4.3. Electrical microstimulation
+150
+151   During electrical microstimulation experiments, we selected two contacts on the probe to be stimulated on
+152   randomly interleaved trials. Each trial consisted either of no microstimulation or stimulation on one
+153   electrode, and there was no statistical relationship between stimulation and the motion stimulus or reward
+154   condition. Microstimulation experiments were only ever performed in one area per session. Stimulation
+155   electrodes were randomly selected from suitable candidates based on tuning curves measured at the start
+156   of an experiment. MT sites were required to have a suitable visual receptive field location and strong
+157   direction tuning. dlPFC sites were required to have suitably positioned visual or premotor response fields.
+158
+159   Electrical microstimulation began with the onset of the visual motion stimulus and remained on until the
+160   monkey moved its eyes out of the fixation window to initiate a saccade. Microstimulation was biphasic
+161   and delivered at 200 Hz with an amplitude that ranged across sessions between 20 and 40 A (8-10).
+162
+163   4.4 Quantifying the behavioral impact of microstimulation
+164
+165   To investigate the interaction between reward expectation and the impact of microstimulation on choices,
+166   we summarized the impact of microstimulation in each reward and stimulation condition (Figure 5).
+167   Because MT stimulation biased choices, we summarized behavior as the slope of the line relating the
+168   choices to the direction of the visual motion stimulus (restricted to visual motion stimuli that were within
+169   -120 degrees of the center of the region of increased reward scaling). We summarized the stimulation-
+170   related change as the change in slope between trials with and without stimulation. Because dlPFC
+171   microstimulation produced winner take all choices, we summarized the stimulation-related change in
+172   behavior as the difference in the proportion of choices that were aligned with the preference of the
+173   stimulated cells (defined as choices within 10 degrees of the preference of the stimulated site.
+174
+175   5. Analysis of electrophysiological data
+176
+177   5.1. Inclusion criteria
+178
+179   MT units were included for analysis if their average firing rate during a 250 ms epoch following visual
+180   motion onset, lagged 50 ms for response latency, was at least 10% higher than during a period of stable
+181   fixation on a blank screen. dlPFC units were included for analysis if their firing rate during either of the
+182   two 250 ms epochs that followed the onset of the target ring or the visual motion stimulus, lagged by 50
+183   ms, or the 250 ms that preceded eye movements was at least 10% higher than during a period of stable
+184   fixation on a blank screen. Trials were included for analysis if the monkey indicated a choice by looking
+185   at the target ring between 150 ms and 1500 ms after visual motion onset. Spike counts from a 300 ms
+186   window, aligned to visual stimulus onset and shifted 50ms for latency, were used for subsequent analyses.
+187
+188   5.2. Mixed selectivity analysis
+189
+190   We analyzed non-linear mixed selectivity for recordings from 15 sessions in which we recorded MT and
+191   dlPFC simultaneously. We evaluated the extent to which a linear scaling of motion direction tuning
+192   curves from one reward condition could explain the tuning curve in the other reward condition. We
+193   normalized the two vectors of mean responses from one unit from each reward condition such that their
+194   combined mean equaled 1. Next, we fit a line that scaled the vector from one condition to responses from
+195   the other and we evaluated the mean squared error in Supplementary Figure 3.
+196
+197   5.3. Dimensionality reduction and angle calculations
+198
+199   To visualize the structure of population activity in monkey (Figure 2) and model (Figure 3), we
+200   performed principal components analysis on trial averaged responses that were either marginalized across
+201   visual motion direction or reward conditions. We quantified the extent to which information about the two
+202   task features was represented in the same dimensions of neuronal population activity, as the angle
+203   between the first principal components for visual motion direction and reward (Figure 2C). Additionally,
+204   we investigated neuronal population formatting using de-mixed principal components analysis (11) with
+205   marginalizations for motion direction, reward condition, time, and the combination of motion direction
+206   and reward (Figure 2D).
+207
+208   5.4 Regression, residual and decoding analysis
+209   We analyzed the amount of variance explained by different task variables by performing linear regression
+210   on responses of individual units from 15 recording sessions in which we recorded MT and dlPFC
+211   simultaneously. A full regression model that included stimulus motion direction, reward condition and
+212   choice was compared to a model that only included choice (Supplementary Figure 8A). Residuals from
+213   the choice only model were then used, alongside the full data, in a decoding analysis to assess the amount
+214   of information in MT and dlPFC populations that was separate from choice-related activity. For stimulus
+215   motion decoding (Supplementary Figure 8B-C) the motion direction of the visual stimulus was predicted
+216   on individual trials using leave-one-out regression and the full list of predicted directions was correlated
+217   with the actual shown directions. For reward condition decoding (Supplementary Figure 8D-E) the reward
+218   condition was predicted on individual trials using leave-one-out regression and the full list of predicted
+219   reward conditions was correlated with the actual reward condition. Each decoding analysis was performed
+220   separately for the full dataset and the choice-removed residuals.
+221
+222   6. Recurrent neural network model
+223
+224   6.1 Training and architecture
+225   The full neural network model consisted of two recurrent modules connected in series, such that part of the
+226   output of the MT-like module (module 1 in the equations below) determined the input to the dlPFC-like
+227   module (module 2). The modules were trained sequentially.
+228   The dynamics of the modules’ recurrent states, 𝑥1 and 𝑥2 , are governed by the following equation:
+229                       𝑥𝑖,𝑡+1 = 𝛼(−𝑥𝑖,𝑡 + 𝐴𝑖 𝑟𝑖,𝑡 + 𝐵𝑖 𝑢𝑖,𝑡 + 𝑏𝑟𝑒𝑐 𝑖 ) + 𝜎√2𝛼 𝑤𝑖,𝑡   𝑖 = 1, 2
+230   where the firing rate 𝑟𝑖,𝑡 = max(0, 𝑥𝑖,𝑡 ) is the recurrent state passed through the rectified linear unit
+231   (ReLU) activation function, 𝑤𝑖,𝑡 ~ 𝑁(0, 1) is a Gaussian noise process scaled by the recurrent noise factor
+                  𝑑𝑡
+232   𝜎, and 𝛼 = is the ratio of the step size to the neural time constant. 𝐴𝑖 , 𝐵𝑖 , 𝑏𝑟𝑒𝑐 𝑖 are the recurrent weight
+                   𝜏
+233   matrices, input weight matrices, and recurrent bias vectors of module 𝑖, respectively, and 𝑢𝑖,𝑡 is the input
+234   to module 𝑖 at time 𝑡. The outputs of the modules are given by:
+235                                               𝑧1,𝑡 = 𝐶1 𝑥1,𝑡 + 𝑏𝑜𝑢𝑡1
+236                                               𝑧2,𝑡 = 𝐶2 𝑟2,𝑡 + 𝑏𝑜𝑢𝑡2
+237   where 𝐶𝑖 , 𝑏𝑜𝑢𝑡 𝑖 are the output weight matrix and output bias vector, respectively. The behavioral choice is
+238   taken to be 𝑎𝑟𝑔𝑚𝑎𝑥(𝑧2,𝑇 ) where 𝑇 is the last time point of the trial.
+239   For each timestep while the ring is present but before the onset of the motion stimulus, both the MT-like
+240   and the dlPFC-like modules received a two-dimensional input proportional to [sin 𝜃𝑅 , cos 𝜃𝑅 ] where 𝜃𝑅 is
+241   the increased reward center for that reward condition. The MT-like module outputs The MT-like module
+242   outputs a sharpened and amplified version of this information, while the dlPFC-like module outputs a
+243   nonlinear function of these and its other inputs, as described below.         Gaussian noise was added
+244   independently to all inputs at each timepoint, and no effort was made to match the variability in neuronal
+245   responses or in behavior to the experimental data. For each timestep during the motion stimulus, the MT-
+246   like module received a 72-dimensional motion input given by the von Mises function:
+247                                     𝑀1 (𝜃𝑖 , 𝜃𝑀 ) = −0.3 + 𝑒 𝑐∗𝑘1 ∗cos(𝜃𝑖−𝜃𝑀 )
+248   where 𝑐 ∈ [0, 1] and 𝜃𝑀 are the coherence and direction of the motion stimulus, and the 72 dimensions
+249   correspond to evenly spaced directions 𝜃𝑖 ∈ [0, 2𝜋]. The model in Figures 3 and 4 was trained with 𝑐 =
+250   0.6, 𝑘1 = 0.3. The MT-like module was first trained separately to take in this noisy signal and output an
+251   amplified, sharper 72-dimensional motion output given by von Mises function:
+252                                  𝑀2 (𝜃𝑖 , 𝜃𝑀 ) = 𝑎 ∗ (−0.3 + 𝑒 𝑐∗𝑘2 ∗cos(𝜃𝑖−𝜃𝑀 ) )
+253   with 𝑘2 = 0.8 > 𝑘1 and 𝑎 = 2. It was also trained to output [sin 𝜃𝑅 , cos 𝜃𝑅 ] to ensure that the reward
+254   condition input is not simply ignored. After the MT-like module was trained, we froze the weights and
+255   trained the dlPFC-like module to take as inputs the motion output from the MT-like module and combine
+256   it with a reward condition input to produce a 72-dimensional reward function output given by:
+                                                                                                          𝜋
+                                 (3.5 + 1.5 ∗ cos(1.8 ∗ 𝑑𝜃𝑖 ,𝜃𝑀 )) ∗ (1 + 0.75 ∗ cos(𝑑𝜃𝑖,𝜃𝑅 )), 𝑑𝜃𝑖 ,𝜃𝑀 ≤
+257          𝑅(𝜃𝑖 , 𝜃𝑀 , 𝜃𝑅 ) = {                                                                         4
+                                                                                𝜋
+                                                               0,     𝑑𝜃𝑖 ,𝜃𝑀 >
+                                                                                4
+258   where 𝑑𝜃1 ,𝜃2 is the angular distance between 𝜃1 and 𝜃2 . This is the same reward scaling as was used in the
+259   experiments (Supplementary Figure 1).
+260   Both modules were trained by supervised learning with mean squared error loss using the Adam optimizer
+261   algorithm (11). The error signal between the model and desired output was used to define a gradient in the
+262   recurrent weights and then updated. The weights matrices were subject to a Dale’s law constraint in which
+263   all input and output projections are excitatory (0), and 20% (30 out of 150) of recurrent units send solely
+264   inhibitory (0) projections while the remaining 80% send solely excitatory projections.
+265   The training and testing of the neural network were implemented with custom code based on open-source
+266   packages (PsychRNN (12) and TensorFlow (13)).
+267
+268   In the MT-like module, the first two dimensions of activity representing direction information accounted
+269   for 98.0% of the response variance and the first reward dimension accounted for 55.3% of the variance
+270   explained across the possible reward conditions (tested in steps of 20 degrees from 0 to 340). In the dlPFC-
+271   like module, activity is higher dimensional and the first two dimensions of activity representing direction
+272   information accounted for 52.2% of the response variance across stimulus motion conditions and the first
+273   reward dimension accounted for 51.5% of the variance across the possible reward conditions.
+274
+275   6.2 Model unit perturbation
+276   To generate predictions about the impact of differences between the information representation in the MT-
+277   like and dlPFC-like module, we performed perturbation experiments in the fully trained models. We
+278   perturbed the activity of individual units in the recurrent layers of each module by adding an additional
+279   untrained input (that projected only to the stimulated unit) during the motion input period.
+280
+281   References:
+282   1.    J. C. Martinez-Trujillo, S. Treue, Feature-based attention increases the selectivity of
+283         population responses in primate visual cortex. Current Biology 14, 744-751 (2004).
+284   2.    S. Treue, J. C. Martinez-Trujillo, Feature-based attention influences motion processing
+285         gain in macaque visual cortex. Nature 399, 575-579 (1999).
+286   3.    D. H. Brainard, The Psychophysics Toolbox. Spatial vision 10, 433-436 (1997).
+287   4.    D. Pelli, The VideoToolbox software for visual psychophysics: Transforming numbers
+288         into movies. Spatial vision 10, 437-442 (1997).
+289   5.    K. H. Britten, M. N. Shadlen, W. T. Newsome, J. A. Movshon, The Analysis of Visual
+290         Motion: A Comparison of Neuronal and Psychophysical Performance. The Journal of
+291         Neuroscience 12, 4745-4765 (1992).
+292   6.    T. D. Albright, R. Desimone, C. G. Gross, Columnar organization of directionally
+293         selective cells in visual area MT of the macaque. Journal of Neurophysiology 51, 16-31
+294         (1984).
+295   7.    R. T. Born, D. C. Bradley, Structure and function of visual area MT. Annual review of
+296         neuroscience 28, 157-189 (2005).
+297   8.    T. Moore, K. M. Armstrong, Selective gating of visual signals by microstimulation of
+298         frontal cortex. Nature 421, 370-373 (2003).
+299   9.    C. Salzman, K. H. Britten, W. T. Newsome, Cortical microstimulation influences
+300         perceptual judgements of motion direction. Nature 346, 174-177 (1990).
+301   10.   C. Salzman, C. Murasugi, K. H. Britten, W. T. Newsome, Microstimulation in visual area
+302         MT: effects on direction discrimination performance. The Journal of neuroscience 12,
+303         2331-2355 (1992).
+304   11.   D. Kingma, J. Ba, Adam: A Method for Stochastic Optimization. International
+305         Conference on Learning Representations, (2014).
+306   12.   D. B. Ehrlich, J. T. Stone, D. Brandfonbrener, A. Atanasov, J. D. Murray, PsychRNN: An
+307         Accessible and Flexible Python Package for Training Recurrent Neural Network Models
+308         on Cognitive Tasks. eneuro 8, ENEURO.0427-0420.2020 (2021).
+309   13.   M. Abadi et al., Tensorflow: Large-scale machine learning on heterogeneous distributed
+310         systems. arXiv preprint arXiv:1603.04467, (2016).
+
+311
+

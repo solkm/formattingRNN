@@ -1,0 +1,853 @@
+ 1   Title: Linking neuronal population formatting to function
+ 2
+ 3   Authors:
+ 4   Douglas A. Ruff1, Sol K. Markman1,2, Jason Z. Kim3, Marlene R. Cohen1
+ 5
+ 6   Affiliations:
+     1
+ 7     Department of Neurobiology, University of Chicago, IL, USA
+     2
+ 8     Department of Brain & Cognitive Sciences, Massachusetts Institute of Technology, MA, USA
+     3
+ 9     Department of Physics, Cornell University, Ithaca, NY, USA
+10
+11   Abstract:
+12   Neurons throughout the brain encode essentially everything, so why have distinct areas? We propose that
+13   areas format different information sources differently, implying their computational role. We compared
+14   the middle temporal area (MT), involved in visual motion perception, and the dorsolateral prefrontal
+15   cortex (dlPFC), implicated in decision-making and reward. In a task that required combining motion and
+16   reward information, both regions encoded both motion and reward, but formatted differently. MT
+17   represented them separably, while dlPFC combined them in a decision-related format. A recurrent
+18   network model (RNN) trained to reproduce that formatting predicted a distinct effect of stimulating those
+19   areas. Consistent with predictions, MT stimulation biased choices while dlPFC stimulation produced
+20   ‘winner-take-all’ outcomes. Our findings suggest that a modular structure flexibly reformats information
+21   to enable complex behaviors.
+22
+23   Main Text:
+24   Animals capable of complex behaviors tend to have more distinct brain areas than simpler organisms, and
+25   artificial networks that perform many tasks tend to self-organize into modules (1-3). This suggests that
+26   different brain areas serve distinct functions supporting complex behavior. Many experiments
+27   demonstrate a functional segregation across different brain areas and pathways (4), yet the responses of
+28   individual neurons reflect multiple sensory, cognitive, and/or motor processes. A recent set of studies
+29   indicates that essentially anything that an animal senses, knows, or does can be decoded from neural
+30   activity in any brain area (5-7).
+31
+32   The goal of our study was to understand what the representation of those information sources can tell us
+33   about the role of a neuronal population in behavior. For example, in visual cortex, MT neurons are tuned
+34   for visual motion direction (8-12), and their responses are modulated by reward expectation and other
+35   cognitive processes (13-16). However, the presence of signals related to both motion and reward does
+36   little to identify the role of these neurons in behavior. The same distributions of tuning and modulation are
+37   consistent with multiple ways of formatting information in the population (which is sometimes called
+38   representational geometry or neuronal population geometry (17, 18)). Neuronal population geometry
+39   refers to the representation of stimulus, task, or motor information in a high dimensional space where the
+40   response of each neuron represents one dimension (19-26). In such a space, neuronal population
+41   responses to a circular variable like motion direction trace out a circle. Multiplicatively scaling the
+42   responses of individual neurons to simulate, for example, attention or reward expectation (27, 28), can
+43   stretch and/or shift that circle. A shift normal to the plane of the circle would mean that motion and
+44   reward information are represented separably, while scaling the circle, or a shift in the plane of the circle,
+45   would imply different formatting, in which motion and reward representations are intertwined.
+46
+47   The different possibilities arise because even identically tuned neurons have heterogeneous modulation by
+48   cognitive processes (29). Simulating this heterogeneity by adding some randomness in the amount of
+49   modulation by reward expectation among neurons with identical tuning for motion direction (Fig. 1A;
+50   Methods) can produce population representations of motion direction and reward expectation that are
+51   either separable (encoded in different dimensions in a space where the response of each neuron is one
+52   dimension; Fig. 1B, C, D) or combined (encoded in the same dimensions; Fig. 1E, F, G). This simulation
+53   demonstrates that the difference between separable and combined population formatting is not reliably
+54   inferable from single neuron tuning properties alone because all responses were drawn from the same
+55   distributions of single neuron responses. Instead, the population formatting arises from how responses to
+56   motion and reward expectation are coordinated across the population.
+57
+58   Previous studies have found that the formatting of information from different sensory, cognitive, or motor
+59   sources varies across brain areas, tasks, and species (18-27). Artificial networks that are trained to
+60   perform many tasks or complex tasks tend to self-organize into modules that likely format information
+61   differently (1, 2). The goal of our study was to use causal manipulations to link population formatting to
+62   the role of a neuronal population in behavior.
+63
+64   New insights from a continuous, information-integration task
+65   Our study hinged on having a behavioral task that 1) requires decision-makers to combine information
+66   from multiple sources, so we could link population formatting to behavior, and 2) has a rich enough
+67   behavioral output to test hypotheses about the relationship between neuronal responses, causal
+68   manipulations, and behavior. We therefore trained monkeys to combine two information sources in a
+69   continuous estimation task, which provides richer behavioral outputs when compared to typical binary
+70   choice tasks (see also (30, 31)).
+71
+72   Two adult rhesus monkeys (Macaca mulatta, both male, 8 and 10 kg) combined sensory information
+73   (motion direction) with cognitive information (the reward magnitude associated with different choices) to
+74   make continuous choices. They indicated their choice on each trial by making an eye movement to a
+75   target ring. The amount of fruit juice reward they earned depended on the accuracy of their motion
+76   direction estimate and a scaling factor associated with particular choices. Colored portions of the target
+77   ring indicated which choices would be associated with increased, decreased, or unchanged scaling of the
+78   reward amount (Figure 1H, I, and Supplementary Figure 1). We refer to the center of the colored regions
+79   as the increased reward or decreased reward center and different locations of those regions (which varied
+80   from trial to trial) as reward conditions. During each session, the high reward center was one of two
+81   opposite locations chosen randomly from trial to trial, and the low reward center was 180o opposite. We
+82   chose the two locations based on the tuning of the recorded neurons, so there were different pairs of
+83   locations during different sessions. The monkeys demonstrated that they integrated motion and reward
+84   information by making choices that varied smoothly with the direction of the visual stimulus and biasing
+85   choices toward larger expected rewards (Figure 1J, K; choices toward the high reward region were
+86   typically associated with faster reaction times; Supplementary Figure 2).
+87
+88
+89
+90
+91
+92
+ 93
+ 94   Figure 1. Population formatting, task and behavior. A) Simulation demonstrating that neural population
+ 95   formatting cannot be inferred from single neurons. We plot tuning functions from simulated neurons
+ 96   whose preferred visual motion directions are uniformly distributed across 360 of motion in 10 steps
+ 97   and whose gain depends on the difference between their preferred direction and the direction of
+ 98   maximum expected reward (here either 45 or 225; details inspired from single neuron studies (33)).
+ 99   The modulation for each neuron was drawn from a distribution whose mean is shown in (A; Methods). B)
+100   Example population representation of motion direction and reward expectation from the simulated
+101   population in A (using one representative random draw from the distribution of reward modulations)
+102   where motion direction and reward information are encoded separably (so they are in different
+103   dimensions of the space where the response of each neuron is one dimension). For illustration, the
+104   population responses are projected into the two dimensions that encode the most visual motion direction
+105   information. C) Same as (B), with a third dimension that accounts for the most reward information.
+106   Colors denote the two reward conditions depicted in (A). D) Schematic showing population formatting
+107   where motion direction and reward expectation are represented separably (different, or orthogonal,
+108   dimensions). E) Example population representation of motion direction information and reward
+109   information from the simulated population in (A) using a different random draw from the same
+110   distribution of reward modulations as in (B), picked for illustration because this random draw produced
+111   information about motion direction and reward expectation that are combined (occur in the same
+112   dimensions of neuronal population space). Conventions as in (B). F) Same as (E), with a third dimension
+113   that accounts for the most reward information. Conventions as in (C). G) Schematic showing population
+114   formatting where reward expectation and motion direction are represented jointly (same dimensions). H)
+115   Continuous estimation task schematic. Monkeys indicated their choice by looking at a point on the target
+116   ring that corresponded to a direction judgment. They were rewarded according to the accuracy of their
+117   estimate of the direction of a dynamic random dot display (actual motion direction depicted by yellow
+118   star, gray star indicates choice that would result in maximum for this trial), which was scaled by a factor
+119   indicated by the color of that portion of the target ring (see Methods and Supplementary Figure 1; pink
+120   and purple colored stars signify the center of these two possible regions, no stars were shown to the
+121   monkeys). The motion direction and reward condition were independently randomly interleaved from
+122   trial to trial, and the target ring colors associated with increased or decreased reward varied in blocks of
+123   trials with uncued changes. I) We recorded populations of neurons in MT and dlPFC using
+124   multielectrode probes. In the raster plot, each tick represents an action potential during a single example
+125   trial, each row is a multiunit site in dlPFC (top) or MT (bottom). The x-axis represents time (target ring
+126   onset, red; visual motion stimulus onset, yellow; onset of eye movement indicating choice, black). J)
+127   Schematic depicting psychometric functions when choices are based on visual motion direction (yellow),
+128   reward condition (red), or a combination (orange arrows signifying choices that fall in between the
+129   yellow and red lines). K) Behavior from 27 experimental sessions from two monkeys (18 from monkey 1;
+130   41,106 total choices) demonstrate that the monkeys based their choices on a combination of motion
+131   direction and reward information.
+132
+133   Motion and reward information are formatted differently in visual and frontal cortex
+134   While the monkeys performed the continuous estimation task, we recorded simultaneously from a few
+135   dozen neurons in two brain areas thought to contribute differently to the decision computation (Figure 1I).
+136   Neurons in area MT are critical for motion perception (8, 9, 31) and neurons in dlPFC are part of a
+137   network involved in decision-making, reward processing, and eye movement planning (34-36).
+138   Consistent with observations that sensory, cognitive, and motor information is encoded throughout the
+139   brain (6, 7, 37, 38), motion and reward information were readily apparent in the population activity of
+140   both MT and dlPFC (Figure 2) and dlPFC units tended to exhibit more non-linear mixed selectivity for
+141   motion and reward than MT units ((17, 39); Supplementary Figure 3).
+142
+143   However, motion and reward information were formatted differently in the two areas. Motion information
+144   in both areas was represented in a low-dimensional manner (Supplementary Figure 4). However, in MT,
+145   population representations of motion and reward tended to be separable. This means that information
+146   about them occupied distinct dimensions of a neuronal population space where each dimension represents
+147   the response of one neuron (Figure 2A). In contrast, in dlPFC, motion and reward tended to be
+148   represented jointly, such that they occupied overlapping dimensions in neuronal population space (Figure
+149   2B). This difference in neuronal population formatting (Figure 2C and 2D) means that motion and reward
+150   information is encoded independently in MT, while in dlPFC, the same population activity can indicate
+151   different motion directions in different reward conditions. These differences in formatting make this a
+152   good system in which to investigate questions about how formatting is related to the contribution of a
+153   brain area to behavior.
+                                                              154    Figure 2: Both MT and dlPFC encode
+                                                              155    motion and reward information, but
+                                                              156    format that information differently. A)
+                                                              157    MT population responses from an
+                                                              158    example recording session projected
+                                                              159    onto the two axes of neuronal population
+                                                              160    space that account for the most variance
+                                                              161    in motion direction (top) and also the
+                                                              162    most variance across reward conditions
+                                                              163    (bottom; z-axis). Each point is the mean
+                                                              164    population response to one motion
+                                                              165    direction (colors), and open and filled
+                                                              166    circles are from trials in different reward
+                                                              167    conditions. Pairs of pink and purple
+                                                              168    arrows of the same orientation indicate
+                                                              169    responses that align with the reward
+                                                              170    center in each condition (pink arrow
+                                                              171    indicates reward increase). B) Same as
+                                                              172    (A), for dlPFC population responses. C)
+                                                              173    Motion and reward information are
+                                                              174    more separable in MT than dlPFC. In 15
+                                                              175    sessions in which MT and dlPFC
+                                                              176    neurons were recorded simultaneously
+                                                              177    (10 from monkey 1), the angle between
+                                                              178    the dimensions accounting for the most
+                                                              179    variance in motion direction and reward
+                                                              180    condition (𝜃 in the schematic) were
+                                                              181    larger in MT (x-axis) than in dlPFC (y-
+                                                              182    axis; Wilcoxon signed-rank test,
+                                                              183    p<0.05). The red x represents the mean
+                                                              184    across all 15 sessions. D) Demixed-PCA
+                                                              185    reveals that more variance is explained
+                                                              186    by the interaction of motion and reward
+                                                              187    information in dlPFC than in MT
+188   (p<0.001, Wilcoxon rank sum test). Data are from 15 sessions in which MT and dlPFC neurons were
+189   recorded simultaneously and each data point represents one session of data from each area. The
+190   horizontal black lines represent the mean for each area.
+191
+192   An artificial neural network to generate causal hypotheses
+193   We sought to use causal manipulations (e.g. measuring the impact of perturbing neuronal activity on
+194   behavior) to understand the functional implications of differently formatted population representations.
+195   From the existing literature, it was difficult to generate hypotheses about how the outcomes of causal
+196   experiments would relate to information formatting. Some previous studies have attempted to link
+197   neuronal population formatting to information coding or theoretical ideas about how that information
+198   could, in principle, be read out (40-42). However, to our knowledge, no studies have linked neuronal
+199   population formatting directly to behavior by comparing, in either model or experiment, the effect of
+200   causally manipulating brain areas with different formatting.
+201
+202   To generate hypotheses that we could test in further causal experiments, we constructed a recurrent neural
+203   network (RNN) that qualitatively reproduced the neuronal population formatting in MT and dlPFC
+204   (Figure 3A). Our goal was to create a model that could make predictions about the impact of perturbing
+205   neuronal activity in MT and dlPFC on behavior. Our model therefore took as inputs the same information
+206   available to the monkey (motion and reward information). We first trained an MT-like module to receive
+207   a noisy motion signal and the locations of increased and decreased reward centers as inputs and to output
+208   sharpened estimates of stimulus motion direction and the reward center locations, independently. After
+209   training, we froze the recurrent connections and input the motion output units of the MT-like module and
+210   the reward center locations to the dlPFC-like module. This module was trained to output an estimate of
+211   the reward associated with each possible choice given the motion direction and reward condition. We
+212   took the model’s choice to be the direction associated with the highest expected reward (Figure 3B).
+213
+214   The goal of the model was not to provide a quantitatively precise account of the neural data, but to
+215   capture key qualitative features of population formatting observed in MT and dlPFC and to generate
+216   testable predictions about the effects of perturbing those populations. Consistent with the data, the model
+217   represents motion and reward information in a relatively low-dimensional manner and differs across
+218   modules in whether these sources of information are represented independently or jointly. Importantly,
+219   these differences in formatting lead to distinct predictions about the effects of perturbations, which we
+220   then tested experimentally. Like the monkeys, the model appropriately combined information about
+221   motion and reward (qualitatively compare Figure 3B to Figure 1K). By construction, the recurrent layers
+222   in the two modules represent motion and reward in ways qualitatively that mimic MT and dlPFC. Like
+223   our population recordings, the model represented task information in a low-dimensional manner (see
+224   Methods) and Demixed-PCA revealed that more variance is explained by the interaction of motion and
+225   reward information in the dlPFC-module (20% of explained variance across conditions) than in the
+226   MT module (0% variance explained across conditions; compare to Figure 2D). The MT-like module
+227   represented motion and reward information separably (Figure 3C, D, E), while these features were
+228   integrated in the dlPFC-like module (Figure 3F, G, H). This can be visualized by viewing the stable fixed
+229   points which the activity of the hidden layer approaches at the end of a trial (one fixed point for each
+230   combination of motion direction and the two reward conditions, Figure 3C, F; and, to more fully visualize
+231   the population structure, across a larger range of possible reward conditions; Figure 3D, G ). The
+232   similarities between the model and the data make this model a good tool for generating hypotheses about
+233   the relationship between the population formatting and behavior. We note that the correspondence
+234   between model and data is qualitative rather than quantitative, and we do not expect all features of the
+235   measured population activity to be captured by this simplified model.
+236
+237
+238   Figure 3: A two-stage artificial neural network replicates monkey behavior and population
+239   representations in MT and dlPFC. A) We constructed an RNN that qualitatively reproduced neuronal
+240   population formatting in MT and dlPFC and performed the same task as the monkeys. An MT-like module
+241   was trained to output the direction of a noisy motion stimulus (yellow) and the increased reward center
+242   from two possible locations (red), in separable dimensions. The dlPFC-like module was trained to take
+243   the output of the MT-like module and reward condition on each trial and output an estimate of the reward
+244   associated with each possible choice. We take the model’s choice to be the direction with the largest
+245   predicted reward according to the output units of the dlPFC-like module (orange). B) Like the monkeys,
+246   the model makes choices that reflect both motion direction and reward information (compare to Figure
+247   1J, K). Conventions as Figure 1K. C) Fixed points from the MT-like model projected onto the first two
+248   axes of population space that account for the most variance in motion direction (compare to Figure 2A).
+249   Colors represent different input motion directions and open and filled circles represent each of two
+250   possible reward conditions (increased reward center at either 45 or 225). Pairs of pink and purple
+251   arrows of the same orientation point to the responses that aligned with each reward center (pink
+252   indicates reward increase). D) Same as C but including additional reward conditions projected onto the
+253   first two motion dimensions and the first reward dimension (compare to Figure 2A). Reward centers are
+254   identified for different reward conditions with pink and purple circles. E) Same as D, but colored to
+255   emphasize the location of the reward centers. F)-H) Same as C-E, for the dlPFC-like module.
+256
+257   Perturbing units in the recurrent layers illuminates the different functional roles of the two modules
+258   We used our models to generate causal hypotheses about how the impact of perturbing units in the
+259   recurrent layer of each module (43) the way that module formats information (see Methods). Perturbing
+260   units in the MT-like and dlPFC-like modules had qualitatively different effects on model choices.
+261   Consistent with results from a previous study that electrically stimulated MT (31), activating the MT-like
+262   module biased choices toward the preferred direction of the activated unit, provided that the difference
+263   between the motion direction and the preference of the activated unit was less than approximately 150
+264   (vector averaging; Figure 4A-C, column 1). Perturbing the dlPFC-like module was very different. On
+265   some ostensibly identical trials, the model chose the motion direction and on others the preferred direction
+266   of the activated unit, and essentially never in between (winner-take-all; Figure 4A-C, column 3). Further,
+267   the behavioral impact of perturbation depended on the reward condition in the dlPFC-like module but not
+268   the MT-like module (compare Figure 4B and Figure 4C).
+269
+270   Manipulating MT and dlPFC activity had qualitatively different effects on choices
+271   We tested the predictions of our model by electrically microstimulating one electrode at a time in MT or
+272   dlPFC (or neither) on randomly interleaved trials. Consistent with model predictions, microstimulating
+273   MT and dlPFC affected choices in distinct ways. As in previous work (31) and as predicted by our model,
+274   microstimulating MT biased choices midway between the visual stimulus motion direction and the
+275   preferred direction measured at the stimulated site (vector averaging; Figure 4A-C, column 2). In contrast,
+276   and consistent with the prediction of our model, microstimulating dlPFC produced a bimodal choice
+277   distribution, where the monkeys sometimes reported the direction of the visual motion and other times
+278   reported the preference measured at the stimulated site (winner-take-all; Figure 4A-C, column 4) with no
+279   evidence of vector averaging. We note that the correspondence between model and data is qualitative
+280   rather than quantitative, and we do not expect all features of the measured population activity to be
+281   captured by this simplified model. The fact that the model reproduces the qualitative effects of
+282   perturbations despite these differences suggests that the link between population formatting and
+283   behavioral impact depends on coarse features of the representation rather than precise quantitative details.
+284
+285   Furthermore, and consistent with the predictions of our model, stimulating MT and dlPFC differently
+286   interacted with the reward condition. The behavioral impact of MT microstimulation did not depend
+287   strongly on whether the increased or decreased reward was aligned with the preference of the stimulated
+288   cells (compare Figure 4B and 4C, column 2). The intuition is that because different information sources
+289   are encoded approximately independently in MT, there is no interaction between the behavioral impact of
+290   microstimulation and other information that impacts behavior, like reward expectation. In contrast, the
+291   behavioral impact of dlPFC microstimulation is much greater when the increased reward center is aligned
+292   with the preference of the stimulated cells (compare Figure 4B and 4C, column 4). This is consistent with
+293   the observation that in dlPFC, the representations of motion and reward (and choices) are joint. It would
+294   be impossible for stimulating those neurons to impact choices in a way that is independent of reward,
+295   because no aspects of the representations are separable. Consistent with these intuitions, the impact of MT
+296   microstimulation on choices was indistinguishable in the two conditions (Figure 5A), while dlPFC
+297   microstimulation had a larger behavioral impact when the increased reward region was aligned with the
+298   preference of the stimulated cells (Figure 5B). This difference between the areas did not depend on the
+299   coherence of the visual motion stimulus (Supplementary Figure 7).
+300
+
+
+
+
+301
+302   Figure 4: Consistent with model predictions, manipulating MT activity has qualitatively different
+303   effects on choices than manipulating dlPFC activity. A) Polar histograms of choices from model and
+304   monkey in area MT (columns 1 and 2) and dlPFC (columns 3 and 4) on an illustrative subset of trials in
+305   which the visual motion direction was 100o counterclockwise relative to the preferred direction of the
+306   perturbed units. The pink and purple arcs signify the increased and decreased reward centers,
+307   respectively. B) Perturbation-related difference in choices when the preference of the perturbed site was
+308   aligned with increased reward center for the model (columns 1 and 3) and experimental data (columns 2
+309   and 4). The proportion of choices from during non-perturbation trials were subtracted from the
+310   proportion of choices during perturbation trials (Supplementary Figures 5 and 6 display choices from all
+311   conditions). In both the MT-like module and in monkey MT, perturbation biased choices toward the
+312   preference of the perturbed site (away from the identity line in columns 1 and 2; monkey data from 29
+313   experimental sessions, comprising 50 sites; some sessions had stimulation on different electrodes on
+314   interleaved trials). In both the dlPFC-like module and in monkey dlPFC, perturbation produced bimodal
+315   choices that were directed either to the preference the perturbed site or to the mean choice during non-
+316   perturbation trials (resulting in choices clustered along the horizontal line representing the preference of
+317   the perturbed units in columns 3 and 4; monkey data from 23 experimental sessions, comprising 38
+318   stimulated sites). C) Perturbation-related difference in choices when the preference of the perturbed site
+319   was aligned with the decreased reward center. Conventions as in (B).
+320
+
+
+
+
+321
+322   Figure 5. The behavioral impact of dlPFC, but not MT, microstimulation depends on reward
+323   condition. A) The effect of microstimulation for each stimulated site in MT is summarized as the
+324   difference in slope of choices between trials with and without microstimulation (each point summarizes
+325   the behavioral impact of one stimulation site during one recording session; n=50 sites from 29 sessions;
+326   orange X denotes the mean). Large positive values represent large stimulation-associated biases of
+327   choices towards the motion direction preference of the stimulated site. This measure is indistinguishable
+328   in the two reward conditions (p=0.64, Wilcoxon ranked sum test). B) The effect of dlPFC
+329   microstimulation for each stimulated site is summarized as the difference in the proportion of choices
+330   made toward the response field of the neurons at the stimulated site during trials with and without
+331   microstimulation. Large positive values indicate that more choices were directed to the stimulated site’s
+332   preference. Microstimulation had a larger impact on choices when the reward scaling increase was
+333   aligned with the preference of the stimulated site (p<0.01, Wilcoxon ranked sum test). Conventions as in
+334   A (n=38 sites from 23 sessions; orange X denotes the mean).
+335
+336   Interpreting population formatting in relation to task variables
+337   An important issue in interpreting these results is the relationship between what information is
+338   represented in a neuronal population and how that information is formatted. In our task, variables such as
+339   motion direction, reward condition, and choice are inherently related, and activity in dlPFC in particular is
+340   expected to reflect choice-related signals that depend on both motion and reward. Our goal was not to
+341   assign exclusive representations of specific variables to each area or to fully dissociate these variables.
+342   Instead, we asked whether the formatting of task-relevant information at the population level provides
+343   insight into how different areas contribute to behavior.
+344
+345   A key is that differences in formatting make distinct predictions about the effects of causal perturbations.
+346   When information sources are represented independently, perturbations should affect behavior in a
+347   manner that is largely invariant to other task variables. In contrast, when information is represented
+348   jointly, the effect of perturbations should depend on the state of those other variables. Consistent with this
+349   prediction, the behavioral impact of MT microstimulation was largely independent of reward condition,
+350   whereas the impact of dlPFC microstimulation depended strongly on reward alignment. This difference is
+351   captured by the population formatting in each area and does not depend on whether dlPFC activity is
+352   interpreted as reflecting motion, reward, or choice per se. Rather, it reflects how these sources of
+353   information are organized within the population response.
+354
+355   Because our interpretation does not require a strict dissociation between motion, reward, and choice
+356   signals, we performed an additional analysis to assess whether the difference in population formatting
+357   across areas could be explained by choice-related activity alone (see Methods / Supplementary Figure 8).
+358   These analyses confirm that dlPFC activity contains strong choice-related components, as expected, but
+359   that the key differences in population formatting between areas persist beyond these components.
+360
+361   Interestingly, the requirement of our task that monkeys combine information from visual motion and
+362   reward expectation may have heightened the difference between MT and dlPFC stimulation. Unlike
+363   previous studies that elicited winner-take-all behavior using MT microstimulation when the angle
+364   between the visual motion and the preference of stimulated site was large (31, 44), we typically saw
+365   vector averaging whenever we stimulated MT in our main experiment. We hypothesize that the reward
+366   scaling encouraged the monkeys to bias choices towards a larger reward even when the visual motion
+367   evidence suggested a choice associated with a smaller reward. Indeed, when we ran a subset of
+368   experiments with no reward scaling, we occasionally observed winner-take-all effects during MT
+369   microstimulation when the difference between the direction of the visual motion and the preference of the
+370   stimulated site was large (Supplementary Figure 9).
+371
+372   Two controls highlight the robustness of the different impact of MT and dlPFC microstimulation on
+373   behavior. First, we investigated the possibility that the impact of stimulation was larger in one brain area
+374   than the other, which led to qualitatively different impact on behavior. We controlled for this by changing
+375   the relative strength of the visual and electrical stimuli by reducing the visual motion coherence. Rather
+376   than qualitatively changing the impact of MT or dlPFC stimulation, this manipulation simply enhanced
+377   the impact of microstimulation in both areas, more strongly biasing choices towards the preference of the
+378   stimulated site in MT and increasing the proportion of trials on which the monkey reported the preference
+379   of the stimulated site in dlPFC. The qualitative difference between the two areas remained even at low
+380   motion coherence (Supplementary Figure 10 and 11).
+381
+382   Second, we investigated the possibility that the different impact of stimulation in the two areas was
+383   attributable to the fact that for most experiments, the visual motion stimulus overlapped the MT receptive
+384   fields and the target ring overlapped the response fields of the dlPFC neurons. We controlled for this
+385   difference by conducting a subset of microstimulation experiments when the MT receptive fields
+386   overlapped the target ring rather than the visual motion stimulus. In these experiments, we did not
+387   systematically bias choices or induce winner-take-all behavior (Supplementary Figure 12).
+388
+389   A causal link between neuronal population formatting and function
+390
+391   Our study made a leap from correlation to causation in the understanding of the relationship between the
+392   formatting of neuronal population responses and behavior. As in previous studies (44-48), we found that
+393   when choices are based on combining motion and reward information, both MT and dlPFC encode both
+394   information sources. However, we demonstrated that those representations are formatted differently. This
+395   observation means that this system is a platform for testing predictions about what neuronal population
+396   formatting implies about the function of those areas.
+397
+398   Electrical microstimulation has long been used as a tool to understand the contribution of a population of
+399   neurons to behavior and there is a well-known relationship between the effects of microstimulation on
+400   behavior and the spatial organization of feature tuning in cortex (49). MT clearly contains more spatial
+401   organization for motion direction information than dlPFC, but the relationship between spatial
+402   organization and population formatting is not obvious and is an important avenue for future study.
+403
+404   A growing body of theoretical work has quantified how flexibility or robustness in the way that neuronal
+405   population representations could, in principle, guide behavior depends on population formatting (23, 50-
+406   52). Indeed, this theoretical framework predicts that the formatting differences between MT and dlPFC
+407   are consistent with longstanding ideas that visual cortex functions as a close to veridical representation of
+408   the world and that dlPFC flexibly combines information to guide decision-making (34, 35, 47). However,
+409   we showed using our model trained only to reproduce the formatting that there is a causal link between
+410   formatting and function: as predicted by our models, electrically stimulating those areas had a
+411   qualitatively different impact on behavior. Our results support the exciting idea that the contributions of
+412   less well-studied brain areas to less well-studied behaviors can in the future be understood by measuring
+413   the way they format information from different sources.
+414
+415   We used artificial neural networks in a slightly different way than many recent neuroscience studies (2,
+416   50, 53-60), because we used them simply as hypothesis generators. The use of RNNs has generated some
+417   controversy in neuroscience, mainly out of concern over the fact that the architecture of these networks is
+418   vastly different from biological networks (61). Our work highlights the value of using recurrent neural
+419   network models that are constrained by neuronal data to generate experimentally testable predictions
+420   about the relationships between neurons and behavior rather than as models of a biophysically realistic
+421   mechanism.
+422
+423   Finally, our study provides a resolution to the seeming paradox of having multiple brain areas that encode
+424   redundant sensory, cognitive, and motor information (‘everything is everywhere’). Our results suggest
+425   that different brain areas divide up neuronal computations in ways that are reflected in the formatting of
+426   different information sources. We demonstrate that the ability to decode information from a neuronal
+427   population is not sufficient to determine how that population contributes to behavior. Instead, future
+428   efforts to understand neuronal computations and to intervene in disorders that affect cognition should
+429   focus on how the flexible reformatting of neuronal population responses in different areas enables flexible
+430   behavior.
+431
+432
+433
+434
+435   Supplementary figures:
+436
+
+
+
+
+437
+438   Supplementary Figure 1: The monkeys were rewarded based on the accuracy of their motion direction
+439   judgment, increased or decreased by a reward scaling factor associated with different choices. A) Each
+440   trial required a motion direction judgment biased by reward scaling information indicated by the colored
+441   portions of the target ring. For the purposes of illustration, the reward scaling centers are noted with
+442   stars, the direction of stimulus motion is indicated with a yellow star and the choice associated with the
+443   largest reward is marked with a gray star. Both the motion direction and the reward condition were
+444   randomly interleaved from trial to trial, and the colors associated with increased or decreased reward
+445   varied in blocks with uncued changes. The raw reward amount varied across sessions, but rewards were
+446   always based on the (B) difference between the monkey’s choice and the direction of visual motion (with
+447   a hard cut off at +- 45 degrees error) which was scaled by the values in (C). (C) In this example reward
+448   condition, the increased reward center is the middle of the pink arc, and the decreased reward center is
+449   the middle of the purple arc. (D) Reward amount associated with all choices plotted as a function of the
+450   stimulus motion direction relative to the increased reward center (at 0). The largest rewards were
+451   available on trials with stimulus motion directions that were close to the increased reward center
+452   location. Choices with an error greater than 45 degrees from the motion stimulus were given no reward.
+453   (E) The same reward data as in D, but normalized within column (motion direction) to show which
+454   choices were associated with the most reward for each possible stimulus motion direction. Compare to
+455   choices in Figure 1K.
+456
+457
+458
+459
+460
+461
+462
+463
+464
+                                            465
+                                            466
+                                            467
+                                            468
+                                            469
+                                            470
+                                            471
+                                            472
+                                            473
+                                            474
+                                            475
+                                            476
+                                            477
+                                            478
+                                            479
+                                            480
+                                            481
+482   Supplementary Figure 2: Reaction times during the continuous motion estimation task were slightly
+483   faster when the motion direction was aligned with the increased reward center. Mean reaction times (+-
+484   standard error of the mean) are plotted from 41,106 trials collected from 27 recording sessions (18 from
+485   monkey O). Reaction times are defined as the time from the onset of the visual stimulus to the time the
+486   monkey initiated the eye movement used to indicate a direction judgment. Reaction times were
+487   significantly modulated by the alignment between motion direction and the increased reward center
+488   (ANOVA, p<.01).
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+                                                             509
+                                                             510
+                                                             511
+                                                             512
+                                                             513
+                                                             514
+                                                             515
+                                                             516
+                                                             517
+                                                             518
+                                                             519
+                                                             520
+                                                             521
+                                                             522
+                                                             523
+                                                             524
+                                                             525
+                                                             526
+527   Supplementary Figure 3: dlPFC units exhibit more non-linear mixed selectivity to visual motion
+528   direction and reward information than MT. The histograms of mean squared error of a motion direction
+529   tuning curve using a single scaling term to fit the two reward conditions (see Methods section 5.2) show
+530   greater error for dlPFC than MT (Wilcoxon rank sum test, p<.01 x 10-8). The histograms describe tuning
+531   curves for 258 MT units and 322 dlPFC units from 15 recording sessions in which there were
+532   simultaneous recordings in the two areas (10 from monkey 1).
+533
+534
+535
+536
+537
+538
+539
+540
+541   Supplementary Figure 4. Visual motion direction has a low-dimensional representation in both MT
+542   and dlPFC. A) Cumulative proportion explained variance for first and second dimensions of population
+543   averaged MT activity across the same 15 sessions as Figure 2C. Each black line represents data from a
+544   different experimental session, the red line is the mean across sessions. B) Same as A, for data from
+545   dlPFC during the same recording sessions as in A.
+546
+547
+548
+549
+550   Supplementary Figure 5: Behavioral choices from model and monkey during perturbation experiments
+551   when the increased reward center was aligned with the preference of the perturbed units. A) During
+552   monkey experiments, electrical stimulation coincided with the presentation of the visual stimulus. B)
+553   Summary of all choices by the model or monkeys when the increased reward center aligned with the
+554   preferred direction of the perturbed units. Data from 29 experimental sessions (15 from monkey 1;
+555   comprising 50 total stimulated sites across both monkeys; some sessions had stimulation on different
+556   electrodes on interleaved trials) of MT microstimulation (column 2), and 23 sessions (8 sessions from
+557   monkey 1; comprising 38 total stimulated sites across both monkeys) of dlPFC microstimulation (column
+558   4). Top row are choices during trials with no perturbation, bottom row are choices from trials with
+559   perturbation. All trial types, stimulus, and reward conditions were randomly interleaved within a session
+560   along with those shown in Supplementary Figure 6. Data are aligned to the tuning preference of the
+561   stimulated site, and sessions are only included in these analyses if the angular difference between that
+562   preference and the increased reward center was 30 or less. Data are normalized such that each column
+563   sums to 1. C) Plots reproduced from Figure 4B depicting the difference of the plots in (B).
+564
+565
+
+
+
+
+566
+567   Supplementary Figure 6: Behavioral choices from model and monkey during perturbation experiments
+568   when the decreased reward center was aligned with the preference of the perturbed units. A) Summary
+569   of all choices by the model or monkeys from the same experimental sessions and models as
+570   Supplementary Figure 5, on trials when the decreased reward center aligned with the preferred direction
+571   of the perturbed units. Conventions as in Supplementary Figure 5. B) Plots reproduced from Figure 4C
+572   depicting the difference of the plots in (A).
+573
+574
+575
+
+
+
+
+576
+577   Supplementary Figure 7: The behavioral impact of microstimulation depends on the reward condition
+578   in dlPFC but not MT and does not depend on stimulus motion coherence. A) The effect of
+579   microstimulation for each stimulated site in MT is summarized as the difference in slope of choices
+580   between trials with and without microstimulation (each point summarizes the behavioral impact of one
+581   stimulation site on one recording session; orange X denotes the mean) during trials with low coherence
+582   visual stimuli. Experiments used two stimulus motion coherences per session (low coherences were
+583   chosen between 15% and 20% coherence; high coherences were chosen between 35% and 50%
+584   coherence). 12 experimental sessions (7 sessions from monkey 1; comprising 20 total stimulation sites
+585   across both monkeys) of MT microstimulation. This measure was indistinguishable in the two reward
+586   conditions at low motion coherences (p=0.10, Wilcoxon ranked sum test). B) Same as A from the same
+587   experimental sessions during interleaved high motion coherence trials (p=0.07, Wilcoxon ranked sum
+588   test). C) and D) The effect of dlPFC microstimulation for each stimulated site is summarized as the
+589   difference in the proportion of choices made toward the preferred direction of the neurons recorded at
+590   the stimulated site during trials with and without microstimulation. This measure was indistinguishable in
+591   the two reward conditions at low coherence (C; p=0.09, Wilcoxon ranked sum test) but microstimulation
+592   had a larger impact on choices when the reward scaling increase was aligned with the preference of the
+593   stimulated site at high coherence (D, p<0.05, Wilcoxon ranked sum test). 11 sessions (6 sessions from
+594   monkey 1; comprising 17 total stimulation sites across both monkeys) of dlPFC microstimulation.
+595
+596
+597
+598
+599   Supplementary Figure 8: Differences in MT and dlPFC formatting persist after removing choice-
+600   related signals. A) Linear regression performed on individual units recorded in MT and dlPFC reveals
+601   that a greater proportion of total explained response variance is explained by choice signals in dlPFC
+602   than in MT (Wilcoxon ranked sum test, p < 0.001). B)-C) Stimulus motion decoding reveals strong
+603   overlap of choice and motion related signals in both areas. This is unsurprising given the task design.
+604   Removing choice signals from activity (via regression, see Methods) leaves less motion information
+605   remaining in the population activity in both areas (Wilcoxon ranked sum test, both p < 0.0001; means
+606   and standard error of the mean are specified by the black point and error bars). D)-E) Reward condition
+607   decoding is less strongly affected by removing choice signals from population activity.
+608
+609
+610   Supplementary Figure 9: MT microstimulation led to some winner-take all choices during separate
+611   experiments with no reward scaling. A) The task design was identical to the main experiment except that
+612   there were no colored portions of the target ring and reward magnitudes were uniform across choices
+613   and depended only on motion estimation accuracy. B) Summary of choices during 23 experimental
+614   sessions (10 sessions from monkey 1; comprising 46 total stimulation sites across both monkeys) of MT
+615   microstimulation and low coherence dot motion (coherence less than 20% across experiments). Top row
+616   depicts trials with no microstimulation, bottom row depicts trials with microstimulation. C)
+617   Microstimulation-related difference in choices. The proportion of choices from B during non-
+618   microstimulation trials were subtracted from the proportion of choices during microstimulation trials for
+619   each reward condition. Choices were more likely to be ‘winner-take-all’ reflections of the
+620   microstimulation (i.e., clustered near a horizontal band around of choices around the direction
+621   preference of the microstimulated site) than during the main experiment with reward scaling (compare
+622   Figure 4B and C and Supplementary figure 10).
+623
+624
+625   Supplementary Figure 10: The magnitude of, but not qualitative difference between, the behavioral
+626   impact of MT and dlPFC microstimulation depends on motion strength, on trials when the increased
+627   reward center was aligned with the preference of the perturbed units. A) Summary of choices when the
+628   increased reward center aligned with the preferred directions of the microstimulated units during 12
+629   experimental sessions (7 sessions from monkey 1; comprising 20 total stimulation sites across both
+630   monkeys) of MT microstimulation and 11 sessions (6 sessions from monkey 1; comprising 17 total
+631   stimulation sites across both monkeys) of dlPFC microstimulation using two motion coherences per
+632   session (low coherences were chosen between 15% and 20% coherence; high coherences were chosen
+633   between 35% and 50% coherence). The top row depicts trials with no microstimulation and the bottom
+634   row depicts trials with microstimulation. B) Microstimulation-related difference in choices in both areas.
+635   The proportion of choices from A during non-microstimulation trials were subtracted from the proportion
+636   of choices during microstimulation trials at each coherence level. In MT, when the visual motion stimulus
+637   was at a lower coherence, microstimulation biased choices more strongly toward the preference of the
+638   stimulated site. In dlPFC, when the visual motion stimulus was lower coherence, microstimulation
+639   elicited more choices near the preference of the stimulated site.
+640
+641
+
+
+
+
+642
+643
+644   Supplementary Figure 11: The magnitude of, but not qualitative difference between, the behavioral
+645   impact of MT and dlPFC microstimulation depends on motion strength, on trials when the increased
+646   reward center was aligned with the preference of the perturbed units. A) Summary of choices on trials
+647   when the decreased reward center aligned with the preferred directions of the microstimulated units.
+648   Conventions as in Supplementary Figure 10A. B) Microstimulation-related difference in choices in both
+649   areas. Conventions as in Supplementary Figure 10B.
+650
+651   Supplementary Figure 12: Microstimulation in MT does not bias choices when the target ring, not the
+652   visual motion stimulus, overlaps the receptive fields of the microstimulated units. A) As in all
+653   stimulation experiments, electrical stimulation coincided with the presentation of the visual stimulus, but
+654   unlike in most experiments (e.g. Figure 4), the receptive fields of the stimulated MT units overlapped the
+655   target ring, not the visual motion stimulus. B) Summary of choices from 10 experimental sessions (5
+656   sessions from monkey 1; comprising 20 total stimulated sites across both monkeys) of MT
+657   microstimulation when the receptive fields of the stimulated units overlapped the increased (left) or
+658   decreased (right) reward centers. Top row depicts trials with no microstimulation, bottom row depicts
+659   trials with microstimulation. C) Microstimulation-related difference in choices. The proportion of choices
+660   from B during non-microstimulation trials were subtracted from the proportion of choices during
+661   microstimulation trials for each reward condition. Choices were not biased by microstimulation in a way
+662   that is qualitatively similar to microstimulation in dlPFC (compare Figure 4B and C), even though in
+663   both cases, the receptive fields of the stimulated neurons overlapped part of the target ring.
+664
+665
+666   Acknowledgements
+667   We are grateful to Karen McKracken for providing technical assistance, to Ramanujan Srinath, Benjamin
+668   Cowley and members of the Cohen lab for comments on earlier versions of this manuscript and other
+669   helpful suggestions. This work is supported by the Simons Foundation (Simons Collaboration on the
+670   Global Brain award 542961SPI) and the National Institutes of Health (awards R01EY022930,
+671   R01EY034723, and RF1NS121913).
+672
+673   Author contributions
+674   D.A.R. and M.R.C. designed the study. D.A.R. performed the experiments. S.M. and J.K. performed the
+675   recurrent network modelling. All authors analyzed data and wrote the paper.
+676
+677   Competing interests
+678   The authors declare no competing interests
+679
+680   Data availability
+681   The data that support the findings of this study are available from the corresponding author upon
+682   reasonable request.
+683
+684   References
+685
+686   1.      L. N. Driscoll, K. Shenoy, D. Sussillo, Flexible multitask computation in recurrent networks
+687           utilizes shared dynamical motifs. Nat Neurosci 27, 1349-1363 (2024).
+688   2.      G. R. Yang, M. R. Joglekar, H. F. Song, W. T. Newsome, X.-J. Wang, Task representations in
+689           neural networks trained to perform many cognitive tasks. Nature Neuroscience 22, 297-
+690           306 (2019).
+691   3.      G. Roth, U. Dicke, Evolution of the brain and intelligence. Trends in Cognitive Sciences 9,
+692           250-257 (2005).
+693   4.      L. G. Ungerleider, M. Mishkin, in Analysis of Visual Behavior, D. J. Ingle, M. A. Goodale, R.
+694           J. W. Mansfield, Eds. (MIT Press, 1982), vol. 549, pp. 549-586.
+695   5.      S. Tremblay, C. Testard, R. W. DiTullio, J. Inchauspé, M. Petrides, Neural cognitive signals
+696           during spontaneous movements in the macaque. Nature Neuroscience 26, 295-305
+697           (2023).
+698   6.      C. Stringer et al., Spontaneous behaviors drive multidimensional, brainwide activity.
+699           Science 364, 255 (2019).
+700   7.    S. Musall, M. T. Kaufman, A. L. Juavinett, S. Gluf, A. K. Churchland, Single-trial neural
+701         dynamics are dominated by richly varied movements. Nature Neuroscience 22, 1677-
+702         1686 (2019).
+703   8.    A. J. Parker, W. T. Newsome, Sense and the single neuron: probing the physiology of
+704         perception. Annual review of neuroscience 21, 227-277 (1998).
+705   9.    R. T. Born, D. C. Bradley, Structure and function of visual area MT. Annual review of
+706         neuroscience 28, 157-189 (2005).
+707   10.   R. Dubner, S. M. Zeki, Response properties and receptive fields of cells in an anatomically
+708         defined region of the superior temporal sulcus in the monkey. Brain research 35, 528-
+709         532 (1971).
+710   11.   J. H. R. Maunsell, D. C. Van Essen, Functional properties of neurons in middle temporal
+711         visual area of the macaque monkey. I. Selectivity for stimulus direction, speed, and
+712         orientation. Journal of neurophysiology 49, 1127-1147 (1983).
+713   12.   T. D. Albright, R. Desimone, C. G. Gross, Columnar organization of directionally selective
+714         cells in visual area MT of the macaque. Journal of Neurophysiology 51, 16-31 (1984).
+715   13.   E. P. Cook, J. H. Maunsell, Attentional Modulation of Behavioral Performance and
+716         Neuronal Responses in Middle Temporal and Ventral Intraparietal Areas of Macaque
+717         Monkey. the Journal of Neuroscience 22, 1994-2004 (2002).
+718   14.   E. Seidemann, W. T. Newsome, Effect of spatial attention on the responses of area MT
+719         neurons. Journal of neurophysiology 81, 1783-1794 (1999).
+720   15.   S. Treue, J. H. R. Maunsell, Attentional modulation of visual motion processing in cortical
+721         areas MT and MST. Nature 382, 539-541 (1996).
+722   16.   S. Treue, J. C. Martinez-Trujillo, Feature-based attention influences motion processing
+723         gain in macaque visual cortex. Nature 399, 575-579 (1999).
+724   17.   S. Fusi, E. K. Miller, M. Rigotti, Why neurons mix High dimensionality for higher
+725         cognition. Current Opinion in Neurobiology 37, 66-74 (2016).
+726   18.   M. T. Kaufman et al., The implications of categorical and category-free mixed selectivity
+727         on representational geometries. Current Opinion in Neurobiology 77, 102644 (2022).
+728   19.   S. Bernardi et al., The Geometry of Abstraction in the Hippocampus and Prefrontal
+729         Cortex. Cell 183, 954-967 e921 (2020).
+730   20.   S. Chung, L. F. Abbott, Neural population geometry: An approach for understanding
+731         biological and artificial neural networks. Current Opinion in Neurobiology 70, 137-144
+732         (2021).
+733   21.   N. Kriegeskorte, R. A. Kievit, Representational geometry: integrating cognition,
+734         computation, and the brain. Trends Cogn Sci 17, 401-412 (2013).
+735   22.   N. Kriegeskorte, X.-X. Wei, Neural tuning and representational geometry. Nature Reviews
+736         Neuroscience 22, 703-718 (2021).
+737   23.   G. Okazawa, C. E. Hatch, A. Mancoo, C. K. Machens, R. Kiani, Representational geometry
+738         of perceptual decisions in the monkey parietal cortex. Cell 184, 3748-3761.e3718 (2021).
+739   24.   B. Sorscher, S. Ganguli, H. Sompolinsky, Neural representational geometry underlies few-
+740         shot concept learning. Proceedings of the National Academy of Sciences 119,
+741         e2200800119 (2022).
+742   25.   A. Pavuluri, A. Kohn, The representational geometry for naturalistic textures in macaque
+743         V1 and V2. bioRxiv, (2024).
+744   26.   R. Nogueira, C. C. Rodgers, R. M. Bruno, S. Fusi, The geometry of cortical representations
+745         of touch in rodents. Nat Neurosci 26, 239-250 (2023).
+746   27.   M. R. Cohen, J. Maunsell, in The Oxford Handbook of Attention, K. Nobre, S. Kastner, Eds.
+747         (Oxford University Press, Oxford, 2014).
+748   28.   D. A. Ruff, A. M. Ni, M. R. Cohen, Cognition as a Window into Neuronal Population
+749         Space. Annu Rev Neurosci 41, 77-97 (2018).
+750   29.   M. R. Cohen, J. H. R. Maunsell, Attention improves performance primarily by reducing
+751         interneuronal correlations. Nature Neuroscience 12, 1594-1600 (2009).
+752   30.   R. Srinath, M. M. Czarnik, M. R. Cohen, Coordinated Response Modulations Enable
+753         Flexible Use of Visual Information. bioRxiv, 2024.2007.2010.602774 (2024).
+754   31.   M. J. Nichols, W. T. Newsome, Middle temporal visual area microstimulation influences
+755         veridical judgments of motion direction. The Journal of neuroscience 22, 9530-9540
+756         (2002).
+757   32.   S. L. Cloherty, J. L. Yates, D. Graf, G. C. DeAngelis, J. F. Mitchell, Motion Perception in the
+758         Common Marmoset. Cereb Cortex 30, 2658-2672 (2020).
+759   33.   J. C. Martinez-Trujillo, S. Treue, Feature-based attention increases the selectivity of
+760         population responses in primate visual cortex. Current Biology 14, 744-751 (2004).
+761   34.   J. N. Kim, M. N. Shadlen, Neural correlates of a decision in the dorsolateral prefrontal
+762         cortex of the macaque. Nature Neuroscience, 176-185 (1999).
+763   35.   H. R. Heekeren, S. Marrett, L. G. Ungerleider, The neural systems that mediate human
+764         perceptual decision making. Nat Rev Neurosci 9, 467-479 (2008).
+765   36.   B. Gaymard, C. J. Ploner, S. Rivaud, A. I. Vermersch, C. Pierrot-Deseilligny, Cortical control
+766         of saccades. Experimental Brain Research 123, 159-163 (1998).
+767   37.   F. Charles et al., Brain-wide representations of prior information in mouse decision-
+768         making. bioRxiv, 2023.2007.2004.547684 (2023).
+769   38.   N. A. Steinmetz, P. Zatka-Haas, M. Carandini, K. D. Harris, Distributed coding of choice,
+770         action and engagement across the mouse brain. Nature 576, 266-273 (2019).
+771   39.   W. J. Johnston, S. E. Palmer, D. J. Freedman, Nonlinear mixed selectivity supports reliable
+772         neural computation. PLOS Computational Biology 16, e1007544 (2020).
+773   40.   S. Ostojic, S. Fusi, Computational role of structure in neural activity and connectivity.
+774         Trends in Cognitive Sciences.
+775   41.   S. Fusi, E. K. Miller, M. Rigotti, Why neurons mix: high dimensionality for higher
+776         cognition. Current Opinion in Neurobiology 37, 66-74 (2016).
+777   42.   R. Chaudhuri, B. Gerçek, B. Pandey, A. Peyrache, I. Fiete, The intrinsic attractor manifold
+778         and population dynamics of a canonical cognitive circuit across waking and sleep. Nature
+779         Neuroscience 22, 1512-1520 (2019).
+780   43.   M. Khona, I. R. Fiete, Attractor and integrator networks in the brain. Nature Reviews
+781         Neuroscience 23, 744-766 (2022).
+782   44.   N. Cicmil, B. G. Cumming, A. J. Parker, K. Krug, Reward modulates the effect of visual
+783         cortical microstimulation on perceptual decisions. Elife 4, e07832 (2015).
+784   45.   Z. Lin, C. Nie, Y. Zhang, Y. Chen, T. Yang, Evidence accumulation for value computation in
+785         the prefrontal cortex during decision making. Proceedings of the National Academy of
+786         Sciences 117, 30728-30737 (2020).
+787   46.   T. D. Hanks, M. E. Mazurek, R. Kiani, E. Hopp, M. N. Shadlen, Elapsed decision time
+788         affects the weighting of prior probability in a perceptual decision task. J Neurosci 31,
+789         6339-6352 (2011).
+790   47.   M. E. Mazurek, J. D. Roitman, J. Ditterich, M. N. Shadlen, A Role for Neural Integrators in
+791         Perceptual Decision Making. Cerebral Cortex 13, 1257-1269 (2003).
+792   48.   A. E. Rorie, J. Gao, J. L. McClelland, W. T. Newsome, Integration of sensory and reward
+793         information during perceptual decision-making in lateral intraparietal cortex (LIP) of the
+794         macaque monkey. PLoS One 5, e9308 (2010).
+795   49.   M. H. Histed, A. M. Ni, J. H. R. Maunsell, Insights into cortical mechanisms of behavior
+796         from microstimulation experiments. Progress in Neurobiology 103, 115-130 (2013).
+797   50.   V. Mante, D. Sussillo, K. V. Shenoy, W. T. Newsome, Context-dependent computation by
+798         recurrent dynamics in prefrontal cortex. Nature 503, 78-84 (2013).
+799   51.   H. Sohn, D. Narain, N. Meirhaeghe, M. Jazayeri, Bayesian Computation through Cortical
+800         Latent Dynamics. Neuron 103, 934-947 e935 (2019).
+801   52.   D. Peixoto et al., Decoding and perturbing decision states in real time. Nature 591, 604-
+802         609 (2021).
+803   53.   D. Sussillo, Neural circuits as computational dynamical systems. Current Opinion in
+804         Neurobiology 25, 156-163 (2014).
+805   54.   O. Barak, Recurrent neural networks as versatile tools of neuroscience research. Current
+806         Opinion in Neurobiology 46, 1-6 (2017).
+807   55.   G. R. Yang, X.-J. Wang, Artificial Neural Networks for Neuroscientists: A Primer. Neuron
+808         107, 1048-1070 (2020).
+809   56.   D. B. Ehrlich, J. T. Stone, D. Brandfonbrener, A. Atanasov, J. D. Murray, PsychRNN: An
+810         Accessible and Flexible Python Package for Training Recurrent Neural Network Models
+811         on Cognitive Tasks. eneuro 8, ENEURO.0427-0420.2020 (2021).
+812   57.   H. Sheahan, F. Luyckx, S. Nelli, C. Teupe, C. Summerfield, Neural state space alignment
+813         for magnitude generalization in humans and recurrent networks. Neuron 109, 1214-
+814         1226.e1218 (2021).
+815   58.   E. Pollock, M. Jazayeri, Engineering recurrent neural networks from task-relevant
+816         manifolds and dynamics. PLOS Computational Biology 16, e1008128 (2020).
+817   59.   R. Rajalingham, A. Piccato, M. Jazayeri, Recurrent neural networks with explicit
+818         representation of dynamic latent variables can mimic behavioral patterns in a physical
+819         inference task. Nature Communications 13, 5865 (2022).
+820   60.   W. Chaisangmongkon, S. K. Swaminathan, D. J. Freedman, X.-J. Wang, Computing by
+821         Robust Transience: How the Fronto-Parietal Network Performs Sequential, Category-
+822         Based Decisions. Neuron 93, 1504-1517.e1504 (2017).
+823   61.   G. R. Yang, M. Molano-Mazón, Towards the next generation of recurrent network
+824         models for cognitive neuroscience. Current Opinion in Neurobiology 70, 182-192 (2021).
+825
+
